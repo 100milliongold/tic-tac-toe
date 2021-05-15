@@ -19,8 +19,8 @@
         }
     },
     "lint-staged": {
-        "src/**/*.{js,jsx,ts,tsx}" : "eslint",
-        "**/*.{js,jsx,json,ts,tsx}" : "prettier --write"
+        "src/**/*.{js,jsx,ts,tsx}": "eslint",
+        "**/*.{js,jsx,json,ts,tsx}": "prettier --write"
     },
     "dependencies": {
         "expo": "~41.0.1",
