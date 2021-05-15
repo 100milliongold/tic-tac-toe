@@ -13,8 +13,8 @@
         "prepare": "husky install"
     },
     "husky": {
-        "hooks" : {
-            "pre-commit" : "npm run typecheck && npm run format:check && npm run lint"
+        "hooks": {
+            "pre-commit": "npm run typecheck && npm run format:check && npm run lint"
         }
     },
     "dependencies": {
