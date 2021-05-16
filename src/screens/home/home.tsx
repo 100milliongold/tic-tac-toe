@@ -13,15 +13,14 @@ export default function Home({ navigation }: HomeProps): ReactElement {
     return (
         <GradientBackground>
             <ScrollView contentContainerStyle={styles.container}>
-            <Text>Home</Text>
-            <Button
-                title="Game"
-                onPress={() => {
-                    navigation.navigate("Game", { gameId: "juhi" });
-                }}
-            />
+                <Text>Home</Text>
+                <Button
+                    title="Game"
+                    onPress={() => {
+                        navigation.navigate("Game", { gameId: "juhi" });
+                    }}
+                />
             </ScrollView>
-
         </GradientBackground>
     );
 }
