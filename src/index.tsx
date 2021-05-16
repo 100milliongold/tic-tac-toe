@@ -17,7 +17,7 @@ export default function App() {
     return (
         <View style={styles.container}>
             <Text
-                onPress={ () => alert(true)}
+                onPress={() => alert(true)}
                 style={{ fontSize: 25 }}
                 weight="700"
             >
