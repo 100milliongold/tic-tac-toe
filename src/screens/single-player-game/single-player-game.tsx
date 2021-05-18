@@ -7,17 +7,26 @@ import {
     isEmpty,
     isFull,
     getAvailableMoves,
-    BoardState
+    BoardState,
+    isTerminal
 } from "@utils";
 
 import styles from "./single-player-game.style";
 
 export default function SinglePlayerGame(): ReactElement {
-    const b: BoardState = ["x", "o", null, "x", "o", null, "x", "o", null];
+    // prettier-ignore
+    const b: BoardState = [
+        "x", "x", "o", 
+        "o", "o", "x", 
+        "x", "o", "x"
+    ];
     printFormattedBoard(b);
-    console.log(isEmpty(b));
-    console.log(isFull(b));
-    console.log(getAvailableMoves(b));
+
+    console.log(isTerminal(b));
+
+    // console.log(isEmpty(b));
+    // console.log(isFull(b));
+    // console.log(getAvailableMoves(b));
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
