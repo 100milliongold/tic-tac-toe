@@ -4,20 +4,22 @@ import { isTerminal, getAvailableMoves, printFormattedBoard } from "./board";
 export const getBestMove = (
     state: BoardState,
     maximizing: boolean,
-    depth = 0
+    depth = 0,
+    maxDepth = -1
 ): number => {
     const childValues: { [key: string]: string } = {};
 
     const getBestMoveRecursive = (
         state: BoardState,
         maximizing: boolean,
-        depth = 0
+        depth = 0,
+        maxDepth = -1
     ): number => {
         const terminalObject = isTerminal(state);
-        if (terminalObject) {
-            if (terminalObject.winner === "x") {
+        if (terminalObject || depth === maxDepth) {
+            if (terminalObject && terminalObject.winner === "x") {
                 return 100 - depth;
-            } else if (terminalObject.winner === "o") {
+            } else if (terminalObject && terminalObject.winner === "o") {
                 return -100 + depth;
             }
             return 0;
@@ -30,11 +32,7 @@ export const getBestMove = (
                 child[index] = "x";
                 console.log(`Child board (x turn) (depth: ${depth})`);
                 printFormattedBoard(child);
-                const childValue = getBestMoveRecursive(
-                    child,
-                    false,
-                    depth + 1
-                );
+                const childValue = getBestMoveRecursive(child, false, depth + 1, maxDepth);
                 console.log("childValue", childValue);
                 best = Math.max(best, childValue);
 
@@ -52,16 +50,16 @@ export const getBestMove = (
                 return parseInt(arr[rand]);
             }
             return best;
-        }
+        } else { 
 
-        if (!maximizing) {
+        // if (!maximizing) {
             let best = 100;
             getAvailableMoves(state).forEach(index => {
                 const child: BoardState = [...state];
                 child[index] = "o";
                 console.log(`Child board (o turn) (depth: ${depth})`);
                 printFormattedBoard(child);
-                const childValue = getBestMoveRecursive(child, true, depth + 1);
+                const childValue = getBestMoveRecursive(child, true, depth + 1, maxDepth);
                 console.log("childValue", childValue);
                 best = Math.min(best, childValue);
                 if (depth === 0) {
@@ -81,5 +79,5 @@ export const getBestMove = (
         }
     };
 
-    return getBestMoveRecursive(state, maximizing, depth);
+    return getBestMoveRecursive(state, maximizing, depth, maxDepth);
 };
