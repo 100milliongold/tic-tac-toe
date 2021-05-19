@@ -1,18 +1,11 @@
-import React, { ReactElement, useState, useEffect } from "react";
+import React, { ReactElement, useState, useEffect, useRef } from "react";
 import { SafeAreaView } from "react-native";
 import { GradientBackground, Board } from "@components";
-
-import {
-    printFormattedBoard,
-    isEmpty,
-    isFull,
-    getAvailableMoves,
-    BoardState,
-    isTerminal,
-    getBestMove
-} from "@utils";
-
 import styles from "./single-player-game.style";
+
+import { isEmpty, BoardState, isTerminal, getBestMove } from "@utils";
+import { Audio } from "expo-av";
+import * as Haptics from "expo-haptics";
 
 export default function SinglePlayerGame(): ReactElement {
     // prettier-ignore
@@ -30,11 +23,22 @@ export default function SinglePlayerGame(): ReactElement {
     // 인간이 셀 선택항목이 가장 많을때 -> 인간이 먼저 선택했는지 여부
     const [isHumanMaximizing, setIsHumanMaximizing] = useState<boolean>(true);
 
+    const popSoundref = useRef<Audio.Sound | null>(null);
+    const pop2Soundref = useRef<Audio.Sound | null>(null);
+
     const insertCell = (cell: number, symbol: "x" | "o"): void => {
         const stateCopy: BoardState = [...state];
         if (stateCopy[cell] || isTerminal(stateCopy)) return;
         stateCopy[cell] = symbol;
         setState(stateCopy);
+        try {
+            symbol === "x"
+                ? popSoundref.current?.replayAsync()
+                : pop2Soundref.current?.replayAsync();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const gameResult = isTerminal(state);
@@ -70,6 +74,30 @@ export default function SinglePlayerGame(): ReactElement {
             }
         }
     }, [state, turn]);
+
+    useEffect(() => {
+        //여기에서 사운드를 로드
+        const popSoundObject = new Audio.Sound();
+        const pop2SoundObject = new Audio.Sound();
+
+        const loadSounds = async () => {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            await popSoundObject.loadAsync(require("@assets/pop_1.wav"));
+            popSoundref.current = popSoundObject;
+
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            await pop2SoundObject.loadAsync(require("@assets/pop_2.wav"));
+            pop2Soundref.current = pop2SoundObject;
+        };
+        loadSounds();
+
+        return () => {
+            // 여기에서 사운드를 헤제
+            popSoundObject && popSoundObject.unloadAsync();
+            pop2SoundObject && pop2SoundObject.unloadAsync();
+        };
+    }, []);
+
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
