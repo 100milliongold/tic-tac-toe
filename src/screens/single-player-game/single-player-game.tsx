@@ -8,7 +8,8 @@ import {
     isFull,
     getAvailableMoves,
     BoardState,
-    isTerminal
+    isTerminal,
+    getBestMove
 } from "@utils";
 
 import styles from "./single-player-game.style";
@@ -16,10 +17,12 @@ import styles from "./single-player-game.style";
 export default function SinglePlayerGame(): ReactElement {
     // prettier-ignore
     const [state, setState] = useState<BoardState>([
-        null, null ,null,
-        null, null ,null,
-        null, null ,null,
+        null, "x" ,null,
+        "o", null ,"x",
+        "o", "o" ,"x",
     ])
+    console.log("getBestMove", getBestMove(state, true));
+
     const handleOnCellPressed = (cell: number): void => {
         const stateCopy: BoardState = [...state];
         if (stateCopy[cell] || isTerminal(stateCopy)) return;
