@@ -17,7 +17,7 @@ import styles from "./single-player-game.style";
 export default function SinglePlayerGame(): ReactElement {
     // prettier-ignore
     const [state, setState] = useState<BoardState>([
-        null, "x" ,null,
+        null, null ,null,
         "o", null ,"x",
         "o", "o" ,"x",
     ])
