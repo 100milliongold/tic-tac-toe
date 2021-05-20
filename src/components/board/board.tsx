@@ -50,7 +50,17 @@ export default function Board({
                     </TouchableOpacity>
                 );
             })}
-            {gameResult && <BoardLine size={size} gameResult={gameResult} />}
+            {/* {gameResult && <BoardLine size={size} gameResult={gameResult} />} */}
+            {true && (
+                <BoardLine
+                    size={size}
+                    gameResult={{
+                        winner: "o",
+                        diagonal: "MAIN",
+                        direction: "D"
+                    }}
+                />
+            )}
         </View>
     );
 }
