@@ -108,6 +108,7 @@ export default function SinglePlayerGame(): ReactElement {
                     }}
                     state={state}
                     size={300}
+                    gameResult={gameResult}
                 />
             </SafeAreaView>
         </GradientBackground>
