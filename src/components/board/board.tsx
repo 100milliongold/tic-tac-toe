@@ -6,6 +6,8 @@ import { BoardState, BoardResult } from "@utils";
 
 import BoardLine from "./board-line";
 
+import styles from "./board.style";
+
 type BoardProps = {
     state: BoardState;
     size: number;
@@ -23,44 +25,30 @@ export default function Board({
 }: BoardProps): ReactElement {
     return (
         <View
-            style={{
-                width: size,
-                height: size,
-                backgroundColor: "green",
-                flexDirection: "row",
-                flexWrap: "wrap"
-            }}
+            style={[
+                styles.board,
+                {
+                    width: size,
+                    height: size
+                }
+            ]}
         >
             {state.map((cell, index) => {
                 return (
                     <TouchableOpacity
                         disabled={cell !== null || disabled}
                         onPress={() => onCellPressed && onCellPressed(index)}
-                        style={{
-                            width: "33.33333%",
-                            height: "33.33333%",
-                            backgroundColor: "#fff",
-                            borderWidth: 1,
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
+                        // styles 겍체 안에 cell 겍체가 있기 때문에 동적으로 해도 에러가 발생하지 않음
+                        style={[styles.cell, styles[`cell${index}` as "cell"]]}
                         key={index}
                     >
-                        <Text style={{ fontSize: size / 8 }}>{cell}</Text>
+                        <Text style={[styles.cellText, { fontSize: size / 7 }]}>
+                            {cell}
+                        </Text>
                     </TouchableOpacity>
                 );
             })}
-            {/* {gameResult && <BoardLine size={size} gameResult={gameResult} />} */}
-            {true && (
-                <BoardLine
-                    size={size}
-                    gameResult={{
-                        winner: "o",
-                        diagonal: "MAIN",
-                        direction: "D"
-                    }}
-                />
-            )}
+            {gameResult && <BoardLine size={size} gameResult={gameResult} />}
         </View>
     );
 }

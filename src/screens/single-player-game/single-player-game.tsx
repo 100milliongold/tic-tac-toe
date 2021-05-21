@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, Dimensions } from "react-native";
 import { GradientBackground, Board } from "@components";
 import styles from "./single-player-game.style";
 
@@ -11,6 +11,8 @@ import {
     Cell,
     useSounds
 } from "@utils";
+
+const SCREEM_WIDTH = Dimensions.get("screen").width;
 
 export default function SinglePlayerGame(): ReactElement {
     // prettier-ignore
@@ -107,7 +109,7 @@ export default function SinglePlayerGame(): ReactElement {
                         handleOnCellPressed(cell);
                     }}
                     state={state}
-                    size={300}
+                    size={SCREEM_WIDTH - 60}
                     gameResult={gameResult}
                 />
             </SafeAreaView>
