@@ -30,6 +30,12 @@ export default function SinglePlayerGame(): ReactElement {
     // 인간이 셀 선택항목이 가장 많을때 -> 인간이 먼저 선택했는지 여부
     const [isHumanMaximizing, setIsHumanMaximizing] = useState<boolean>(true);
 
+    const [gamesCount, setGamesCount] = useState({
+        wins: 0,
+        losses: 0,
+        draws: 0
+    });
+
     const playSound = useSounds();
 
     const insertCell = (cell: number, symbol: "x" | "o"): void => {
@@ -64,21 +70,40 @@ export default function SinglePlayerGame(): ReactElement {
         return "DRAW";
     };
 
+    const newGame = () => {
+        // prettier-ignore
+        setState([
+            null, null ,null,
+            null, null ,null,
+            null, null ,null,
+        ])
+        setTurn(Math.random() < 0.5 ? "HUMAN" : "BOT");
+    };
+
     useEffect(() => {
         if (gameResult) {
             // handle game finished
             const winner = getWinner(gameResult.winner);
             if (winner === "HUMAN") {
                 playSound("win");
-                alert("You Won!");
+                setGamesCount({
+                    ...gamesCount,
+                    wins: gamesCount.wins + 1
+                });
             }
             if (winner === "BOT") {
                 playSound("loss");
-                alert("You Lost!");
+                setGamesCount({
+                    ...gamesCount,
+                    losses: gamesCount.losses + 1
+                });
             }
             if (winner === "DRAW") {
                 playSound("draw");
-                alert("It's a Draw!");
+                setGamesCount({
+                    ...gamesCount,
+                    draws: gamesCount.draws + 1
+                });
             }
         } else {
             if (turn === "BOT") {
@@ -92,6 +117,9 @@ export default function SinglePlayerGame(): ReactElement {
                     setIsHumanMaximizing(false);
                     setTurn("HUMAN");
                 } else {
+                    /**
+                     * state : 상태(게임말) , o or x , 단계(건들지말것), 난이도 : -1 , 1 , 2
+                     */
                     const best = getBestMove(state, !isHumanMaximizing, 0, -1);
                     insertCell(best, isHumanMaximizing ? "o" : "x");
                     setTurn("HUMAN");
@@ -108,15 +136,21 @@ export default function SinglePlayerGame(): ReactElement {
                     <View style={styles.results}>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Wins</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>
+                                {gamesCount.wins}
+                            </Text>
                         </View>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Draws</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>
+                                {gamesCount.draws}
+                            </Text>
                         </View>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Losses</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>
+                                {gamesCount.losses}
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -129,11 +163,24 @@ export default function SinglePlayerGame(): ReactElement {
                     size={SCREEM_WIDTH - 60}
                     gameResult={gameResult}
                 />
-
-                <View style={styles.modal}>
-                    <Text style={styles.modalText}>You Won</Text>
-                    <Button title="Play Again" />
-                </View>
+                {gameResult && (
+                    <View style={styles.modal}>
+                        <Text style={styles.modalText}>
+                            {getWinner(gameResult.winner) === "HUMAN" &&
+                                "You Won"}
+                            {getWinner(gameResult.winner) === "BOT" &&
+                                "You Lost"}
+                            {getWinner(gameResult.winner) === "DRAW" &&
+                                "It's a Draw"}
+                        </Text>
+                        <Button
+                            onPress={() => {
+                                newGame();
+                            }}
+                            title="Play Again"
+                        />
+                    </View>
+                )}
             </SafeAreaView>
         </GradientBackground>
     );

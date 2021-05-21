@@ -1,4 +1,3 @@
-import { DeliusUnicase_400Regular } from "@expo-google-fonts/delius-unicase";
 import { colors } from "@utils";
 import { StyleSheet } from "react-native";
 
