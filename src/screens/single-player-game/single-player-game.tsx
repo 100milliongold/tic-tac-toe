@@ -1,6 +1,6 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { SafeAreaView, Dimensions } from "react-native";
-import { GradientBackground, Board } from "@components";
+import { SafeAreaView, View, Dimensions } from "react-native";
+import { GradientBackground, Board, Text, Button } from "@components";
 import styles from "./single-player-game.style";
 
 import {
@@ -103,6 +103,23 @@ export default function SinglePlayerGame(): ReactElement {
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
+                <View>
+                    <Text style={styles.difficulty}>Difficulty : Hard</Text>
+                    <View style={styles.results}>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Wins</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Draws</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Losses</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                    </View>
+                </View>
                 <Board
                     disabled={Boolean(isTerminal(state) || turn !== "HUMAN")}
                     onCellPressed={cell => {
@@ -112,6 +129,11 @@ export default function SinglePlayerGame(): ReactElement {
                     size={SCREEM_WIDTH - 60}
                     gameResult={gameResult}
                 />
+
+                <View style={styles.modal}>
+                    <Text style={styles.modalText}>You Won</Text>
+                    <Button title="Play Again" />
+                </View>
             </SafeAreaView>
         </GradientBackground>
     );

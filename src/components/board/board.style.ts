@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0
     },
     cell2: {
+        borderTopWidth: 0,
         borderRightWidth: 0
     },
     cell3: {
