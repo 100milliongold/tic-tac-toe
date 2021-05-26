@@ -1,12 +1,4 @@
-import React, {
-    ReactNode,
-    ReactElement,
-    useState,
-    useEffect,
-    createContext,
-    Dispatch,
-    SetStateAction
-} from "react";
+import React, { ReactNode, ReactElement, useState, useEffect } from "react";
 import {} from "react-native";
 import AppLoading from "expo-app-loading";
 
@@ -18,16 +10,11 @@ import {
 
 import { Auth } from "aws-amplify";
 
+import { useAuth } from "@contexts/auth-context";
+
 type AppBootstrapProps = {
     children: ReactNode;
 };
-
-type AuthContextType = {
-    user: { [key: string]: any } | null;
-    setUser: Dispatch<SetStateAction<{ [key: string]: any } | null>>;
-};
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default function AppBootstrap({
     children
@@ -38,7 +25,7 @@ export default function AppBootstrap({
     });
 
     const [authLoaded, setAuthLoaded] = useState(false);
-    const [user, setUser] = useState<{ [key: string]: any } | null>(null);
+    const { setUser } = useAuth();
 
     useEffect(() => {
         async function checkCurrentUser() {
@@ -53,16 +40,5 @@ export default function AppBootstrap({
         checkCurrentUser();
     }, []);
 
-    return fontLoaded && authLoaded ? (
-        <AuthContext.Provider
-            value={{
-                user,
-                setUser
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    ) : (
-        <AppLoading />
-    );
+    return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
 }
