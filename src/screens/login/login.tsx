@@ -8,8 +8,8 @@ import { colors } from "@utils";
 export default function Login(): ReactElement {
     const passwordRef = useRef<NativeTextInput | null>(null);
     const [form, setForm] = useState({
-        username: "",
-        password: ""
+        username: "test",
+        password: "12345678"
     })
     const [loading, setLoading] = useState(false)
     const setFormInput = (key: keyof typeof form , value: string) : void => {

@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactElement } from "react";
+import React, { ReactNode, ReactElement, useState, useEffect } from "react";
 import {} from "react-native";
 import AppLoading from "expo-app-loading";
 
@@ -7,6 +7,8 @@ import {
     DeliusUnicase_400Regular,
     DeliusUnicase_700Bold
 } from "@expo-google-fonts/delius-unicase";
+
+import { Auth } from "aws-amplify";
 
 type AppBootstrapProps = {
     children: ReactNode;
@@ -19,5 +21,22 @@ export default function AppBootstrap({
         DeliusUnicase_400Regular,
         DeliusUnicase_700Bold
     });
-    return fontLoaded ? <>{children}</> : <AppLoading />;
+
+    const [authLoaded, setAuthLoaded] = useState(false)
+
+    useEffect(() => {
+        async function checkCurrentUser() {
+            try {
+                const user = await Auth.currentAuthenticatedUser();
+                console.log(user);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        setAuthLoaded(true)
+        checkCurrentUser()
+    }, [])
+
+
+    return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
 }
