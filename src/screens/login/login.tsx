@@ -4,8 +4,14 @@ import styles from "./login.sytles";
 import { GradientBackground, TextInput, Button } from "@components";
 import { Auth } from "aws-amplify";
 import { colors } from "@utils";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigatorParams } from "@config/navigator";
 
-export default function Login(): ReactElement {
+type LoginProps = {
+    navigation: StackNavigationProp<StackNavigatorParams, "Login">;
+};
+
+export default function Login({ navigation }: LoginProps): ReactElement {
     const passwordRef = useRef<NativeTextInput | null>(null);
     const [form, setForm] = useState({
         username: "test",
@@ -22,8 +28,8 @@ export default function Login(): ReactElement {
         console.log(username, password);
 
         try {
-            const res = await Auth.signIn(username, password);
-            console.log(res);
+            await Auth.signIn(username, password);
+            navigation.navigate("Home");
         } catch (error) {
             console.log(error);
             Alert.alert("Error!", error.message || "An error occurred!");

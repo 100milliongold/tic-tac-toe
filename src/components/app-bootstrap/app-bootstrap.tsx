@@ -8,7 +8,7 @@ import {
     DeliusUnicase_700Bold
 } from "@expo-google-fonts/delius-unicase";
 
-import { Auth } from "aws-amplify";
+import { Auth, Hub } from "aws-amplify";
 
 import { useAuth } from "@contexts/auth-context";
 
@@ -38,6 +38,25 @@ export default function AppBootstrap({
         }
         setAuthLoaded(true);
         checkCurrentUser();
+
+        function hubListener(hubData: any) {
+            const { data, event } = hubData.payload;
+            switch (event) {
+                case "signOut":
+                    setUser(null);
+                    break;
+                case "signIn":
+                    setUser(data);
+                    break;
+                default:
+                    break;
+            }
+        }
+        Hub.listen("auth", hubListener);
+
+        return () => {
+            Hub.remove("auth", hubListener);
+        };
     }, []);
 
     return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
