@@ -4,12 +4,14 @@ import {
     ScrollView,
     TextInput as NativeTextInput,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    ActivityIndicator
 } from "react-native";
 import styles from "./signup.sytles";
-import { GradientBackground, TextInput, Button } from "@components";
+import { GradientBackground, TextInput, Button, Text } from "@components";
 import { Auth } from "aws-amplify";
 import { colors } from "@utils";
+import OTPInput from "@twotalltotems/react-native-otp-input";
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 
@@ -30,6 +32,9 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
         password: "12345678"
     });
     const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState<"signUp" | "otp">("signUp");
+    const [confirming, setConfirming] = useState(false);
+
     const setFormInput = (key: keyof typeof form, value: string): void => {
         setForm({ ...form, [key]: value });
     };
@@ -37,10 +42,8 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
     const signUp = async () => {
         setLoading(true);
         const { username, password, email, name } = form;
-        console.log(username, password);
-
         try {
-            const res = await Auth.signUp({
+            await Auth.signUp({
                 username,
                 password,
                 attributes: {
@@ -48,13 +51,25 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
                     name
                 }
             });
-            console.log(res);
+            setStep("otp");
         } catch (error) {
             console.log(error);
             Alert.alert("Error!", error.message || "An error occurred!");
         }
 
         setLoading(false);
+    };
+
+    const confirmCode = async (code: string) => {
+        setConfirming(true);
+        try {
+            await Auth.confirmSignUp(form.username, code);
+            navigation.navigate("Login");
+            Alert.alert("Success!", "You can now login with your account.");
+        } catch (error) {
+            Alert.alert("Error!", error.message || "An error occurred!");
+        }
+        setConfirming(false);
     };
 
     return (
@@ -65,69 +80,96 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
                 style={{ flex: 1 }}
             >
                 <ScrollView contentContainerStyle={styles.container}>
-                    <TextInput
-                        returnKeyType="next"
-                        placeholder="Username"
-                        value={form.username}
-                        onChangeText={value => {
-                            setFormInput("username", value);
-                        }}
-                        style={{
-                            marginBottom: 20
-                        }}
-                        onSubmitEditing={() => {
-                            emailRef.current?.focus();
-                        }}
-                    />
-                    <TextInput
-                        ref={nameRef}
-                        returnKeyType="next"
-                        placeholder="Name"
-                        value={form.name}
-                        onChangeText={value => {
-                            setFormInput("name", value);
-                        }}
-                        style={{
-                            marginBottom: 20
-                        }}
-                        onSubmitEditing={() => {
-                            nameRef.current?.focus();
-                        }}
-                    />
-                    <TextInput
-                        keyboardType="email-address"
-                        ref={emailRef}
-                        returnKeyType="next"
-                        placeholder="Email"
-                        value={form.email}
-                        onChangeText={value => {
-                            setFormInput("email", value);
-                        }}
-                        style={{
-                            marginBottom: 20
-                        }}
-                        onSubmitEditing={() => {
-                            passwordRef.current?.focus();
-                        }}
-                    />
-                    <TextInput
-                        ref={passwordRef}
-                        value={form.password}
-                        onChangeText={value => {
-                            setFormInput("password", value);
-                        }}
-                        style={{
-                            marginBottom: 30
-                        }}
-                        secureTextEntry
-                        returnKeyType="done"
-                        placeholder="Password"
-                    />
-                    <Button
-                        loading={loading}
-                        title="Sign-Up"
-                        onPress={signUp}
-                    />
+                    {step === "otp" && (
+                        <>
+                            <Text style={styles.otpText}>
+                                Enter the code that yor received via email.
+                            </Text>
+                            {confirming ? (
+                                <ActivityIndicator color={colors.lightGreen} />
+                            ) : (
+                                <OTPInput
+                                    placeholderCharacter="0"
+                                    placeholderTextColor="#5d5379"
+                                    codeInputFieldStyle={styles.otpInputBox}
+                                    codeInputHighlightStyle={
+                                        styles.otpActiveInputBox
+                                    }
+                                    pinCount={6}
+                                    onCodeFilled={code => {
+                                        confirmCode(code);
+                                    }}
+                                />
+                            )}
+                        </>
+                    )}
+                    {step === "signUp" && (
+                        <>
+                            <TextInput
+                                returnKeyType="next"
+                                placeholder="Username"
+                                value={form.username}
+                                onChangeText={value => {
+                                    setFormInput("username", value);
+                                }}
+                                style={{
+                                    marginBottom: 20
+                                }}
+                                onSubmitEditing={() => {
+                                    emailRef.current?.focus();
+                                }}
+                            />
+                            <TextInput
+                                ref={nameRef}
+                                returnKeyType="next"
+                                placeholder="Name"
+                                value={form.name}
+                                onChangeText={value => {
+                                    setFormInput("name", value);
+                                }}
+                                style={{
+                                    marginBottom: 20
+                                }}
+                                onSubmitEditing={() => {
+                                    nameRef.current?.focus();
+                                }}
+                            />
+                            <TextInput
+                                keyboardType="email-address"
+                                ref={emailRef}
+                                returnKeyType="next"
+                                placeholder="Email"
+                                value={form.email}
+                                onChangeText={value => {
+                                    setFormInput("email", value);
+                                }}
+                                style={{
+                                    marginBottom: 20
+                                }}
+                                onSubmitEditing={() => {
+                                    passwordRef.current?.focus();
+                                }}
+                            />
+                            <TextInput
+                                ref={passwordRef}
+                                value={form.password}
+                                onChangeText={value => {
+                                    setFormInput("password", value);
+                                }}
+                                style={{
+                                    marginBottom: 30
+                                }}
+                                secureTextEntry
+                                returnKeyType="done"
+                                placeholder="Password"
+                            />
+                            <Button
+                                loading={loading}
+                                title="Sign-Up"
+                                onPress={signUp}
+                            />
+                        </>
+                    )}
                 </ScrollView>
             </KeyboardAvoidingView>
         </GradientBackground>
