@@ -1,14 +1,16 @@
-import React, { ReactElement, useRef, useState } from "react";
+import React, { ReactElement, useRef, useState, useEffect } from "react";
 import {
     Alert,
     ScrollView,
     TextInput as NativeTextInput,
     KeyboardAvoidingView,
     Platform,
-    ActivityIndicator
+    ActivityIndicator,
+    TouchableOpacity
 } from "react-native";
 import styles from "./signup.sytles";
 import { GradientBackground, TextInput, Button, Text } from "@components";
+import { RouteProp } from "@react-navigation/native";
 import { Auth } from "aws-amplify";
 import { colors } from "@utils";
 import OTPInput from "@twotalltotems/react-native-otp-input";
@@ -17,9 +19,14 @@ import { StackNavigatorParams } from "@config/navigator";
 
 type SignUpProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "SignUp">;
+    route: RouteProp<StackNavigatorParams, "SignUp">;
 };
 
-export default function SignUp({ navigation }: SignUpProps): ReactElement {
+export default function SignUp({
+    navigation,
+    route
+}: SignUpProps): ReactElement {
+    const unconfirmedUsername = route.params?.username;
     const headerHeight = useHeaderHeight();
     const passwordRef = useRef<NativeTextInput | null>(null);
     const emailRef = useRef<NativeTextInput | null>(null);
@@ -27,13 +34,16 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
 
     const [form, setForm] = useState({
         username: "test",
-        email: "keishawn@needlegqu.com",
+        email: "jona10@needlegqu.com",
         name: "Test Name",
         password: "12345678"
     });
     const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState<"signUp" | "otp">("signUp");
+    const [step, setStep] = useState<"signUp" | "otp">(
+        unconfirmedUsername ? "otp" : "signUp"
+    );
     const [confirming, setConfirming] = useState(false);
+    const [resending, setResending] = useState(false);
 
     const setFormInput = (key: keyof typeof form, value: string): void => {
         setForm({ ...form, [key]: value });
@@ -63,7 +73,10 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
     const confirmCode = async (code: string) => {
         setConfirming(true);
         try {
-            await Auth.confirmSignUp(form.username, code);
+            await Auth.confirmSignUp(
+                form.username || unconfirmedUsername || "",
+                code
+            );
             navigation.navigate("Login");
             Alert.alert("Success!", "You can now login with your account.");
         } catch (error) {
@@ -71,6 +84,22 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
         }
         setConfirming(false);
     };
+
+    const resendCode = async (username: string) => {
+        setResending(true);
+        try {
+            await Auth.resendSignUp(username);
+        } catch (error) {
+            Alert.alert("Error!", error.message || "An error occurred!");
+        }
+        setResending(false);
+    };
+
+    useEffect(() => {
+        if (unconfirmedUsername) {
+            resendCode(unconfirmedUsername);
+        }
+    }, [unconfirmedUsername]);
 
     return (
         <GradientBackground>
@@ -88,18 +117,43 @@ export default function SignUp({ navigation }: SignUpProps): ReactElement {
                             {confirming ? (
                                 <ActivityIndicator color={colors.lightGreen} />
                             ) : (
-                                <OTPInput
-                                    placeholderCharacter="0"
-                                    placeholderTextColor="#5d5379"
-                                    codeInputFieldStyle={styles.otpInputBox}
-                                    codeInputHighlightStyle={
-                                        styles.otpActiveInputBox
-                                    }
-                                    pinCount={6}
-                                    onCodeFilled={code => {
-                                        confirmCode(code);
-                                    }}
-                                />
+                                <>
+                                    <OTPInput
+                                        style={{ height: 100 }}
+                                        placeholderCharacter="0"
+                                        placeholderTextColor="#5d5379"
+                                        codeInputFieldStyle={styles.otpInputBox}
+                                        codeInputHighlightStyle={
+                                            styles.otpActiveInputBox
+                                        }
+                                        pinCount={6}
+                                        onCodeFilled={code => {
+                                            confirmCode(code);
+                                        }}
+                                    />
+                                    {resending ? (
+                                        <ActivityIndicator
+                                            color={colors.lightGreen}
+                                        />
+                                    ) : (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (form.username) {
+                                                    resendCode(form.username);
+                                                }
+                                                if (unconfirmedUsername) {
+                                                    resendCode(
+                                                        unconfirmedUsername
+                                                    );
+                                                }
+                                            }}
+                                        >
+                                            <Text style={styles.resendLink}>
+                                                Recend Code
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                </>
                             )}
                         </>
                     )}

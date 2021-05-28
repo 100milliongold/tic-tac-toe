@@ -22,6 +22,11 @@ const styles = StyleSheet.create({
     },
     otpText: {
         color: colors.lightGreen
+    },
+    resendLink: {
+        color: colors.lightGreen,
+        textAlign: "center",
+        textDecorationLine: "underline"
     }
 });
 

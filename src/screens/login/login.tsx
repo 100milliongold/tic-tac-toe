@@ -30,14 +30,18 @@ export default function Login({ navigation }: LoginProps): ReactElement {
     const login = async () => {
         setLoading(true);
         const { username, password } = form;
-        console.log(username, password);
+        // console.log(username, password);
 
         try {
             await Auth.signIn(username, password);
             navigation.navigate("Home");
         } catch (error) {
-            console.log(error);
-            Alert.alert("Error!", error.message || "An error occurred!");
+            // console.log(error);
+            if (error.code === "UserNotConfirmedException") {
+                navigation.navigate("SignUp", { username });
+            } else {
+                Alert.alert("Error!", error.message || "An error occurred!");
+            }
         }
 
         setLoading(false);
