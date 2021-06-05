@@ -18,7 +18,7 @@
       "function": {
         "postConfirmation": {
           "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-          "s3Key": "amplify-builds/postConfirmation-336c4d2b416676385648-build.zip"
+          "s3Key": "amplify-builds/postConfirmation-702f346c754841663537-build.zip"
         }
       }
     }

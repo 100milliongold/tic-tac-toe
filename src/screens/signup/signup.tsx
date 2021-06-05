@@ -34,7 +34,7 @@ export default function SignUp({
 
     const [form, setForm] = useState({
         username: "test",
-        email: "jamyiah01@meadowutilities.com",
+        email: "nykole08@zone10electric.com",
         name: "Test Name",
         password: "12345678"
     });
@@ -80,6 +80,7 @@ export default function SignUp({
             navigation.navigate("Login");
             Alert.alert("Success!", "You can now login with your account.");
         } catch (error) {
+            console.log(error);
             Alert.alert("Error!", error.message || "An error occurred!");
         }
         setConfirming(false);
