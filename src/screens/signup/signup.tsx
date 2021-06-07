@@ -34,7 +34,7 @@ export default function SignUp({
 
     const [form, setForm] = useState({
         username: "test",
-        email: "nykole08@zone10electric.com",
+        email: "ariele821@parentsxke.com",
         name: "Test Name",
         password: "12345678"
     });

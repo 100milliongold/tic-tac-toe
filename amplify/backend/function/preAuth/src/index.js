@@ -24,6 +24,14 @@ exports.handler = async (event, context, callback) => {
         disableOffline: true
     });
 
+    const query = gql`
+        query getPlayer($username: String!) {
+            getPlayer(username: $username) {
+                id
+            }
+        }
+    `;
+
     const mutation = gql`
         mutation createPlayer(
             $name: String!
@@ -45,17 +53,31 @@ exports.handler = async (event, context, callback) => {
     `;
 
     try {
-        await graphqlClient.mutate({
-            mutation,
+        const response = await graphqlClient.query({
+            query,
             variables: {
-                name: event.request.userAttributes.name,
-                username: event.userName,
-                cognitoID: event.request.userAttributes.sub,
-                email: event.request.userAttributes.email
+                username: event.userName
             }
         });
-        // 첫번째 인자: 에러 , 두번째 이벤트
-        callback(null, event);
+        if (response.data.getPlayer) {
+            callback(null, event);
+        } else {
+            try {
+                await graphqlClient.mutate({
+                    mutation,
+                    variables: {
+                        name: event.request.userAttributes.name,
+                        username: event.userName,
+                        cognitoID: event.request.userAttributes.sub,
+                        email: event.request.userAttributes.email
+                    }
+                });
+                // 첫번째 인자: 에러 , 두번째 이벤트
+                callback(null, event);
+            } catch (error) {
+                callback(error);
+            }
+        }
     } catch (error) {
         callback(error);
     }

@@ -66,7 +66,9 @@ export default function ChangePassword(): ReactElement {
                                     newPasswordRef.current?.focus();
                                 }}
                                 value={form.oldPassword}
-                                onChangeText={value => setFormInput("oldPassword", value)}
+                                onChangeText={value =>
+                                    setFormInput("oldPassword", value)
+                                }
                             />
                             <TextInput
                                 secureTextEntry
@@ -75,7 +77,9 @@ export default function ChangePassword(): ReactElement {
                                 ref={newPasswordRef}
                                 placeholder="New Password"
                                 value={form.newPassword}
-                                onChangeText={value => setFormInput("newPassword", value)}
+                                onChangeText={value =>
+                                    setFormInput("newPassword", value)
+                                }
                             />
 
                             <Button

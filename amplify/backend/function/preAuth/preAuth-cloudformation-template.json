@@ -59,12 +59,12 @@
                 "FunctionName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "postConfirmation",
+                        "preAuth",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "postConfirmation",
+                                    "preAuth",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -107,12 +107,12 @@
                 "RoleName": {
                     "Fn::If": [
                         "ShouldNotCreateEnvResources",
-                        "tictactoeLambdaRole5bcb4f2b",
+                        "tictactoeLambdaRolebd9a7d60",
                         {
                             "Fn::Join": [
                                 "",
                                 [
-                                    "tictactoeLambdaRole5bcb4f2b",
+                                    "tictactoeLambdaRolebd9a7d60",
                                     "-",
                                     {
                                         "Ref": "env"
@@ -194,6 +194,26 @@
                             "Effect": "Allow",
                             "Action": ["appsync:GraphQL"],
                             "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:appsync:",
+                                            {
+                                                "Ref": "AWS::Region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "AWS::AccountId"
+                                            },
+                                            ":apis/",
+                                            {
+                                                "Ref": "apitictactoeGraphQLAPIIdOutput"
+                                            },
+                                            "/types/Query/*"
+                                        ]
+                                    ]
+                                },
                                 {
                                     "Fn::Join": [
                                         "",

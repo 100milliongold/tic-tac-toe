@@ -1,7 +1,7 @@
 {
     "permissions": {
         "api": {
-            "tictactoe": ["Mutation"]
+            "tictactoe": ["Query", "Mutation"]
         }
     },
     "lambdaLayers": []

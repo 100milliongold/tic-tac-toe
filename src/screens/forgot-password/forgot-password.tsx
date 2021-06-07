@@ -21,7 +21,9 @@ type ForgotPasswordProps = {
     navigation: ForgotPasswordScreenNavigationProp;
 };
 
-export default function ForgotPassword({ navigation }: ForgotPasswordProps): ReactElement {
+export default function ForgotPassword({
+    navigation
+}: ForgotPasswordProps): ReactElement {
     const headerHeight = useHeaderHeight();
     const passwordRef = useRef<NativeTextInput | null>(null);
     const [loading, setLoading] = useState(false);
@@ -73,7 +75,9 @@ export default function ForgotPassword({ navigation }: ForgotPasswordProps): Rea
                             style={{ marginBottom: 20 }}
                             placeholder="Username"
                             value={form.username}
-                            onChangeText={value => setFormInput("username", value)}
+                            onChangeText={value =>
+                                setFormInput("username", value)
+                            }
                         />
                     )}
                     {step === "2" && (
@@ -84,7 +88,9 @@ export default function ForgotPassword({ navigation }: ForgotPasswordProps): Rea
                                 style={{ marginBottom: 20 }}
                                 placeholder="Verification Code"
                                 value={form.code}
-                                onChangeText={value => setFormInput("code", value)}
+                                onChangeText={value =>
+                                    setFormInput("code", value)
+                                }
                                 onSubmitEditing={() => {
                                     passwordRef.current?.focus();
                                 }}
@@ -96,7 +102,9 @@ export default function ForgotPassword({ navigation }: ForgotPasswordProps): Rea
                                 ref={passwordRef}
                                 placeholder="New Password"
                                 value={form.password}
-                                onChangeText={value => setFormInput("password", value)}
+                                onChangeText={value =>
+                                    setFormInput("password", value)
+                                }
                             />
                         </>
                     )}

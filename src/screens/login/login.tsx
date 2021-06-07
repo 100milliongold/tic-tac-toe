@@ -82,7 +82,9 @@ export default function Login({ navigation }: LoginProps): ReactElement {
                         navigation.navigate("ForgotPassword");
                     }}
                 >
-                    <Text style={styles.forgotPasswordLink}>Forgot Password?</Text>
+                    <Text style={styles.forgotPasswordLink}>
+                        Forgot Password?
+                    </Text>
                 </TouchableOpacity>
 
                 <Button loading={loading} title="Login" onPress={login} />

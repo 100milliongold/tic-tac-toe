@@ -8,13 +8,18 @@ import { useAuth } from "@contexts/auth-context";
 import { StackNavigatorParams } from "@config/navigator";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-type SettingsScreenNavigationProp = StackNavigationProp<StackNavigatorParams, "Settings">;
+type SettingsScreenNavigationProp = StackNavigationProp<
+    StackNavigatorParams,
+    "Settings"
+>;
 
 type SettingsProps = {
     navigation: SettingsScreenNavigationProp;
 };
 
-export default function Settings({ navigation }: SettingsProps): ReactElement | null {
+export default function Settings({
+    navigation
+}: SettingsProps): ReactElement | null {
     const { settings, saveSetting } = useSettings();
     const { user } = useAuth();
     if (!settings) return null;
@@ -107,7 +112,12 @@ export default function Settings({ navigation }: SettingsProps): ReactElement | 
                                 navigation.navigate("ChangePassword");
                             }}
                         >
-                            <Text style={[styles.label, { textDecorationLine: "underline" }]}>
+                            <Text
+                                style={[
+                                    styles.label,
+                                    { textDecorationLine: "underline" }
+                                ]}
+                            >
                                 Change Password
                             </Text>
                         </TouchableOpacity>

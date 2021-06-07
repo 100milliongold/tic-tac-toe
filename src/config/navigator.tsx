@@ -4,7 +4,15 @@ import {
     createStackNavigator,
     StackNavigationOptions
 } from "@react-navigation/stack";
-import { Home, SinglePlayerGame, Settings, Login, SignUp, ChangePassword, ForgotPassword } from "@screens";
+import {
+    Home,
+    SinglePlayerGame,
+    Settings,
+    Login,
+    SignUp,
+    ChangePassword,
+    ForgotPassword
+} from "@screens";
 import { colors } from "@utils";
 
 export type StackNavigatorParams = {
@@ -63,7 +71,7 @@ export default function Navigator(): ReactElement {
                     component={SignUp}
                     options={{ title: "Sign-Up" }}
                 />
-                 <Stack.Screen
+                <Stack.Screen
                     name="ChangePassword"
                     options={{ title: "Change Password" }}
                     component={ChangePassword}
