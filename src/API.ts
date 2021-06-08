@@ -1000,4 +1000,9 @@ export type OnDeletePlayerSubscription = {
         owners: Array< string >,
         updatedAt: string,
       } | null > | null,
-      nextT
+      nextToken?: string | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+  } | null,
+};
