@@ -2,6 +2,87 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createPlayer = /* GraphQL */ `
+  mutation CreatePlayer(
+    $input: CreatePlayerInput!
+    $condition: ModelPlayerConditionInput
+  ) {
+    createPlayer(input: $input, condition: $condition) {
+      id
+      cognitoID
+      username
+      name
+      email
+      createdAt
+      updatedAt
+      games {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const updatePlayer = /* GraphQL */ `
+  mutation UpdatePlayer(
+    $input: UpdatePlayerInput!
+    $condition: ModelPlayerConditionInput
+  ) {
+    updatePlayer(input: $input, condition: $condition) {
+      id
+      cognitoID
+      username
+      name
+      email
+      createdAt
+      updatedAt
+      games {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deletePlayer = /* GraphQL */ `
+  mutation DeletePlayer(
+    $input: DeletePlayerInput!
+    $condition: ModelPlayerConditionInput
+  ) {
+    deletePlayer(input: $input, condition: $condition) {
+      id
+      cognitoID
+      username
+      name
+      email
+      createdAt
+      updatedAt
+      games {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
 export const createGame = /* GraphQL */ `
   mutation CreateGame(
     $input: CreateGameInput!
@@ -15,6 +96,8 @@ export const createGame = /* GraphQL */ `
       turn
       state
       winner
+      createdAt
+      updatedAt
       players {
         items {
           id
@@ -26,8 +109,6 @@ export const createGame = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -44,6 +125,8 @@ export const updateGame = /* GraphQL */ `
       turn
       state
       winner
+      createdAt
+      updatedAt
       players {
         items {
           id
@@ -55,8 +138,6 @@ export const updateGame = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -73,6 +154,8 @@ export const deleteGame = /* GraphQL */ `
       turn
       state
       winner
+      createdAt
+      updatedAt
       players {
         items {
           id
@@ -84,8 +167,6 @@ export const deleteGame = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -100,6 +181,19 @@ export const createPlayerGame = /* GraphQL */ `
       gameID
       playerUsername
       owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
       game {
         id
         status
@@ -108,24 +202,11 @@ export const createPlayerGame = /* GraphQL */ `
         turn
         state
         winner
+        createdAt
+        updatedAt
         players {
           nextToken
         }
-        createdAt
-        updatedAt
-      }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -141,6 +222,19 @@ export const updatePlayerGame = /* GraphQL */ `
       gameID
       playerUsername
       owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
       game {
         id
         status
@@ -149,24 +243,11 @@ export const updatePlayerGame = /* GraphQL */ `
         turn
         state
         winner
+        createdAt
+        updatedAt
         players {
           nextToken
         }
-        createdAt
-        updatedAt
-      }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
       }
     }
   }
@@ -182,6 +263,19 @@ export const deletePlayerGame = /* GraphQL */ `
       gameID
       playerUsername
       owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
       game {
         id
         status
@@ -190,106 +284,12 @@ export const deletePlayerGame = /* GraphQL */ `
         turn
         state
         winner
+        createdAt
+        updatedAt
         players {
           nextToken
         }
-        createdAt
-        updatedAt
       }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-export const createPlayer = /* GraphQL */ `
-  mutation CreatePlayer(
-    $input: CreatePlayerInput!
-    $condition: ModelPlayerConditionInput
-  ) {
-    createPlayer(input: $input, condition: $condition) {
-      id
-      cognitoID
-      username
-      name
-      email
-      games {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updatePlayer = /* GraphQL */ `
-  mutation UpdatePlayer(
-    $input: UpdatePlayerInput!
-    $condition: ModelPlayerConditionInput
-  ) {
-    updatePlayer(input: $input, condition: $condition) {
-      id
-      cognitoID
-      username
-      name
-      email
-      games {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const deletePlayer = /* GraphQL */ `
-  mutation DeletePlayer(
-    $input: DeletePlayerInput!
-    $condition: ModelPlayerConditionInput
-  ) {
-    deletePlayer(input: $input, condition: $condition) {
-      id
-      cognitoID
-      username
-      name
-      email
-      games {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
     }
   }
 `;

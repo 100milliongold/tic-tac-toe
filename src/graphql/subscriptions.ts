@@ -2,198 +2,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateGame = /* GraphQL */ `
-  subscription OnCreateGame {
-    onCreateGame {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onUpdateGame = /* GraphQL */ `
-  subscription OnUpdateGame {
-    onUpdateGame {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onDeleteGame = /* GraphQL */ `
-  subscription OnDeleteGame {
-    onDeleteGame {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const onCreatePlayerGame = /* GraphQL */ `
-  subscription OnCreatePlayerGame {
-    onCreatePlayerGame {
-      id
-      createdAt
-      gameID
-      playerUsername
-      owners
-      game {
-        id
-        status
-        owners
-        initiator
-        turn
-        state
-        winner
-        players {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-export const onUpdatePlayerGame = /* GraphQL */ `
-  subscription OnUpdatePlayerGame {
-    onUpdatePlayerGame {
-      id
-      createdAt
-      gameID
-      playerUsername
-      owners
-      game {
-        id
-        status
-        owners
-        initiator
-        turn
-        state
-        winner
-        players {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
-export const onDeletePlayerGame = /* GraphQL */ `
-  subscription OnDeletePlayerGame {
-    onDeletePlayerGame {
-      id
-      createdAt
-      gameID
-      playerUsername
-      owners
-      game {
-        id
-        status
-        owners
-        initiator
-        turn
-        state
-        winner
-        players {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      updatedAt
-      player {
-        id
-        cognitoID
-        username
-        name
-        email
-        games {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-    }
-  }
-`;
 export const onCreatePlayer = /* GraphQL */ `
   subscription OnCreatePlayer {
     onCreatePlayer {
@@ -202,6 +10,8 @@ export const onCreatePlayer = /* GraphQL */ `
       username
       name
       email
+      createdAt
+      updatedAt
       games {
         items {
           id
@@ -213,8 +23,6 @@ export const onCreatePlayer = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -226,6 +34,8 @@ export const onUpdatePlayer = /* GraphQL */ `
       username
       name
       email
+      createdAt
+      updatedAt
       games {
         items {
           id
@@ -237,8 +47,6 @@ export const onUpdatePlayer = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -250,6 +58,8 @@ export const onDeletePlayer = /* GraphQL */ `
       username
       name
       email
+      createdAt
+      updatedAt
       games {
         items {
           id
@@ -261,8 +71,198 @@ export const onDeletePlayer = /* GraphQL */ `
         }
         nextToken
       }
+    }
+  }
+`;
+export const onCreateGame = /* GraphQL */ `
+  subscription OnCreateGame($owners: String) {
+    onCreateGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
       createdAt
       updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onUpdateGame = /* GraphQL */ `
+  subscription OnUpdateGame($owners: String) {
+    onUpdateGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onDeleteGame = /* GraphQL */ `
+  subscription OnDeleteGame($owners: String) {
+    onDeleteGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onCreatePlayerGame = /* GraphQL */ `
+  subscription OnCreatePlayerGame($owners: String) {
+    onCreatePlayerGame(owners: $owners) {
+      id
+      createdAt
+      gameID
+      playerUsername
+      owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
+      game {
+        id
+        status
+        owners
+        initiator
+        turn
+        state
+        winner
+        createdAt
+        updatedAt
+        players {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const onUpdatePlayerGame = /* GraphQL */ `
+  subscription OnUpdatePlayerGame($owners: String) {
+    onUpdatePlayerGame(owners: $owners) {
+      id
+      createdAt
+      gameID
+      playerUsername
+      owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
+      game {
+        id
+        status
+        owners
+        initiator
+        turn
+        state
+        winner
+        createdAt
+        updatedAt
+        players {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const onDeletePlayerGame = /* GraphQL */ `
+  subscription OnDeletePlayerGame($owners: String) {
+    onDeletePlayerGame(owners: $owners) {
+      id
+      createdAt
+      gameID
+      playerUsername
+      owners
+      updatedAt
+      player {
+        id
+        cognitoID
+        username
+        name
+        email
+        createdAt
+        updatedAt
+        games {
+          nextToken
+        }
+      }
+      game {
+        id
+        status
+        owners
+        initiator
+        turn
+        state
+        winner
+        createdAt
+        updatedAt
+        players {
+          nextToken
+        }
+      }
     }
   }
 `;

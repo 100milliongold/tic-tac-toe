@@ -2,57 +2,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getGame = /* GraphQL */ `
-  query GetGame($id: ID!) {
-    getGame(id: $id) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const listGames = /* GraphQL */ `
-  query ListGames(
-    $filter: ModelGameFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listGames(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        status
-        owners
-        initiator
-        turn
-        state
-        winner
-        players {
-          nextToken
-        }
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
 export const getPlayer = /* GraphQL */ `
   query GetPlayer($username: String!) {
     getPlayer(username: $username) {
@@ -61,6 +10,8 @@ export const getPlayer = /* GraphQL */ `
       username
       name
       email
+      createdAt
+      updatedAt
       games {
         items {
           id
@@ -72,8 +23,6 @@ export const getPlayer = /* GraphQL */ `
         }
         nextToken
       }
-      createdAt
-      updatedAt
     }
   }
 `;
@@ -98,11 +47,62 @@ export const listPlayers = /* GraphQL */ `
         username
         name
         email
+        createdAt
+        updatedAt
         games {
           nextToken
         }
+      }
+      nextToken
+    }
+  }
+`;
+export const getGame = /* GraphQL */ `
+  query GetGame($id: ID!) {
+    getGame(id: $id) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const listGames = /* GraphQL */ `
+  query ListGames(
+    $filter: ModelGameFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGames(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        status
+        owners
+        initiator
+        turn
+        state
+        winner
         createdAt
         updatedAt
+        players {
+          nextToken
+        }
       }
       nextToken
     }
