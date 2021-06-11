@@ -288,6 +288,22 @@ export type StartGameMutation = {
   } | null,
 };
 
+export type PlayMoveMutationVariables = {
+  game: string,
+  index: number,
+};
+
+export type PlayMoveMutation = {
+  playMove?:  {
+    __typename: "GameData",
+    id: string,
+    status: GameStatus,
+    turn: string,
+    state: Array< Symbol | null >,
+    winner?: string | null,
+  } | null,
+};
+
 export type CreatePlayerMutationVariables = {
   input: CreatePlayerInput,
   condition?: ModelPlayerConditionInput | null,
