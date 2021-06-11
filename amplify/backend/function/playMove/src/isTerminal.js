@@ -1,12 +1,12 @@
-export const isEmpty = (state) => {
+const isEmpty = (state) => {
     return state.every(cell => cell === null);
 };
 
-export const isFull = (state) => {
+const isFull = (state) => {
     return state.every(cell => cell);
 };
 
-export const isTerminal = (state) => {
+const isTerminal = (state) => {
     if (isEmpty(state)) return false;
     const winningLines = [
         [0, 1, 2],
