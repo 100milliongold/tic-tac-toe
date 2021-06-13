@@ -29,7 +29,11 @@ export default function Home({ navigation }: HomeProps): ReactElement {
                         }}
                         style={styles.button}
                     />
-                    <Button title="Multi Player" style={styles.button} />
+                    <Button
+                        onPress={() => navigation.navigate("MultiplayerHome")}
+                        title="Multi Player"
+                        style={styles.button}
+                    />
                     <Button
                         title={user ? "Logout" : "Login"}
                         loading={signingOut}

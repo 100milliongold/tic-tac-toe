@@ -22,7 +22,11 @@ const isTerminal = state => {
     for (let index = 0; index < winningLines.length; index++) {
         const line = winningLines[index];
         const [cell1, cell2, cell3] = line;
-        if (state[cell1] && state[cell1] === state[cell2] && state[cell1] === state[cell3]) {
+        if (
+            state[cell1] &&
+            state[cell1] === state[cell2] &&
+            state[cell1] === state[cell3]
+        ) {
             const result = {
                 winner: state[cell1]
             };
