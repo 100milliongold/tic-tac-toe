@@ -27,26 +27,26 @@ const getGame = gql`
 `
 
 const updateGame = gql`
-    query updateGame(
-        $id: ID! 
-        $turn: String! 
-        $winner: String 
-        $state: [Symbol]! 
-        $status: GameStatus! 
+    mutation updateGame(
+        $id: ID!
+        $turn: String!
+        $winner: String
+        $status: GameStatus!
+        $state: [Symbol]!
         $player: String!
-        ){
+    ) {
         updateGame(
-            input: {id: $id, turn: $turn, winner: $winner, state: $state, status: $status}
-            condition: {turn: {eq : $player}}
-            ) {
+            input: { id: $id, turn: $turn, winner: $winner, status: $status, state: $state }
+            condition: { turn: { eq: $player } }
+        ) {
             id
+            turn
             state
             status
-            turn
             winner
         }
     }
-`
+`;
 
 exports.handler = async (event) => {
 
@@ -113,36 +113,36 @@ exports.handler = async (event) => {
 
     // 5. Update the state, check if the move is a terminal one & update the winner, status, turn & update the state
     // 상태 업데이트, 놓아둔 말이 마직막인지 확인하고 승자, 상태 업데이트, 상태 변경 및 업데이트
-    const symbol = player === game.initiator ? "x" : "o"
+    const symbol = player === game.initiator ? "x" : "o";
     const nextTurn = game.owners.find(p => p !== game.turn);
-    const invitee = game.owners.find(p => p !== game.initiator)
+    const invitee = game.owners.find(p => p !== game.initiator);
     const newState = [...game.state];
-    newState[index] = symbol
-    let newStatus = "ACTIVE"
-    let newWinner = null
+    newState[index] = symbol;
+    let newStatus = "ACTIVE";
+    let newWinner = null;
 
-    const terminalState = isTerminal(newState)
-    if(terminalState){
-        newStatus = "FINISHED"
-        if(terminalState.winner === "x"){
-            newWinner = game.initiator
+    const terminalState = isTerminal(newState);
+    if (terminalState) {
+        newStatus = "FINISHED";
+        if (terminalState.winner === "x") {
+            newWinner = game.initiator;
         }
-        if(terminalState.winner === "o"){
-            newWinner = invitee
+        if (terminalState.winner === "o") {
+            newWinner = invitee;
         }
     }
 
     const updateGameResponse = await graphqlClient.mutate({
-        mutation : updateGame,
+        mutation: updateGame,
         variables: {
             id: gameID,
             turn: nextTurn,
             winner: newWinner,
-            state: newState,
             status: newStatus,
+            state: newState,
             player: player
         }
-    })
+    });
 
     // 6. return the updated game
     // 업데이트 된 게임 반환

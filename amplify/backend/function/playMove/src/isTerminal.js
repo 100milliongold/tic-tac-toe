@@ -1,12 +1,12 @@
-const isEmpty = (state) => {
+const isEmpty = state => {
     return state.every(cell => cell === null);
 };
 
-const isFull = (state) => {
+const isFull = state => {
     return state.every(cell => cell);
 };
 
-const isTerminal = (state) => {
+const isTerminal = state => {
     if (isEmpty(state)) return false;
     const winningLines = [
         [0, 1, 2],
@@ -22,11 +22,7 @@ const isTerminal = (state) => {
     for (let index = 0; index < winningLines.length; index++) {
         const line = winningLines[index];
         const [cell1, cell2, cell3] = line;
-        if (
-            state[cell1] &&
-            state[cell1] === state[cell2] &&
-            state[cell1] === state[cell3]
-        ) {
+        if (state[cell1] && state[cell1] === state[cell2] && state[cell1] === state[cell3]) {
             const result = {
                 winner: state[cell1]
             };
@@ -40,19 +36,18 @@ const isTerminal = (state) => {
             }
             if (index > 5) {
                 result.direction = "D";
-                result.diagonal = index === 6 ? "MAIN" : "CONUTER";
+                result.diagonal = index === 6 ? "MAIN" : "COUNTER";
             }
+
             return result;
         }
     }
-
     if (isFull(state)) {
         return {
             winner: null
         };
     }
-
     return false;
 };
 
-module.exports = isTerminal
+module.exports = isTerminal;
