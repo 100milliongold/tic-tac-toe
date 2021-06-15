@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 import { GradientBackground, Text } from "@components";
 import styles from "./multiplayer-home.style";
@@ -9,10 +9,25 @@ import { API, graphqlOperation } from "aws-amplify";
 import { GraphQLResult } from "@aws-amplify/api";
 import { GetPlayerQuery } from "@api";
 
+type PlayerGamesType = Exclude<
+    Exclude<
+        Exclude<Exclude<GetPlayerQuery["getPlayer"], undefined>, null>["games"],
+        undefined
+    >,
+    null
+>["items"];
+type PlayerGameType = Exclude<Exclude<PlayerGamesType, undefined>, null>[0];
+
 export default function MultiplayerHome(): ReactElement {
     const { user } = useAuth();
 
-    const fetchPlayer = async (nextToken: string | null) => {
+    const [playerGame, setPlayerGame] =
+        useState<PlayerGameType[] | null | undefined>(null);
+    const [nextToken, setNextToken] = useState<string | null | undefined>(null);
+
+    const fetchPlayer = async (nextToken: string | null | undefined) => {
+        if (nextToken === undefined) nextToken = null;
+
         if (user) {
             try {
                 const player = (await API.graphql(
@@ -23,7 +38,11 @@ export default function MultiplayerHome(): ReactElement {
                         nextToken: nextToken
                     })
                 )) as GraphQLResult<GetPlayerQuery>;
-                console.log(player.data?.getPlayer?.games?.items);
+
+                if (player.data?.getPlayer?.games) {
+                    setPlayerGame(player.data.getPlayer.games.items);
+                    setNextToken(player.data.getPlayer.games.nextToken);
+                }
             } catch (error) {
                 Alert.alert("Error!", "An error has occurrend!");
             }

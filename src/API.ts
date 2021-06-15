@@ -85,19 +85,19 @@ export type GetPlayerQuery = {
         game:  {
           __typename: "Game",
           id: string,
+          initiator: string,
+          owners: Array< string >,
           status: GameStatus,
           turn: string,
           winner?: string | null,
-          initiator: string,
-          owners: Array< string >,
           players?:  {
             __typename: "ModelPlayerGameConnection",
             items?:  Array< {
               __typename: "PlayerGame",
               player:  {
                 __typename: "Player",
-                username: string,
                 name: string,
+                username: string,
               },
             } | null > | null,
           } | null,

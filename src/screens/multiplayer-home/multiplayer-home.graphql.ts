@@ -17,16 +17,16 @@ export const getPlayer = gql`
                 items {
                     game {
                         id
+                        initiator
+                        owners
                         status
                         turn
                         winner
-                        initiator
-                        owners
                         players {
                             items {
                                 player {
-                                    username
                                     name
+                                    username
                                 }
                             }
                         }
