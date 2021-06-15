@@ -1,5 +1,12 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { Alert, ScrollView, View } from "react-native";
+import {
+    Alert,
+    ScrollView,
+    View,
+    FlatList,
+    TouchableOpacity,
+    ActivityIndicator
+} from "react-native";
 import { GradientBackground, Text } from "@components";
 import styles from "./multiplayer-home.style";
 import { useAuth } from "@contexts/auth-context";
@@ -21,32 +28,50 @@ type PlayerGameType = Exclude<Exclude<PlayerGamesType, undefined>, null>[0];
 export default function MultiplayerHome(): ReactElement {
     const { user } = useAuth();
 
-    const [playerGame, setPlayerGame] =
+    const [playerGames, setPlayerGames] =
         useState<PlayerGameType[] | null | undefined>(null);
     const [nextToken, setNextToken] = useState<string | null | undefined>(null);
+
+    const [loading, setLoading] = useState(false);
 
     const fetchPlayer = async (nextToken: string | null | undefined) => {
         if (nextToken === undefined) nextToken = null;
 
         if (user) {
+            setLoading(true);
             try {
                 const player = (await API.graphql(
                     graphqlOperation(getPlayer, {
                         username: user.username,
-                        limit: 1,
+                        limit: 2,
                         sortDirection: "DESC",
                         nextToken: nextToken
                     })
                 )) as GraphQLResult<GetPlayerQuery>;
 
                 if (player.data?.getPlayer?.games) {
-                    setPlayerGame(player.data.getPlayer.games.items);
+                    setPlayerGames(player.data.getPlayer.games.items);
                     setNextToken(player.data.getPlayer.games.nextToken);
                 }
             } catch (error) {
                 Alert.alert("Error!", "An error has occurrend!");
             }
+            setLoading(false);
         }
+    };
+
+    const renderGame = ({ item }: { item: PlayerGameType }) => {
+        const game = item?.game;
+        return (
+            <TouchableOpacity style={{ marginBottom: 20 }}>
+                <Text style={{ color: colors.lightGreen }}>
+                    {game?.owners[0]}
+                </Text>
+                <Text style={{ color: colors.lightGreen }}>
+                    {game?.owners[1]}
+                </Text>
+            </TouchableOpacity>
+        );
     };
 
     useEffect(() => {
@@ -56,11 +81,40 @@ export default function MultiplayerHome(): ReactElement {
     return (
         <GradientBackground>
             {user ? (
-                <ScrollView contentContainerStyle={styles.container}>
-                    <Text style={{ color: colors.lightGreen }}>
-                        {user.username}
-                    </Text>
-                </ScrollView>
+                <FlatList
+                    contentContainerStyle={styles.container}
+                    data={playerGames}
+                    renderItem={renderGame}
+                    keyExtractor={playerGame =>
+                        playerGame
+                            ? playerGame.game.id
+                            : `${new Date().getTime()}`
+                    }
+                    ListEmptyComponent={() => {
+                        if (loading) {
+                            return (
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
+                                    <ActivityIndicator
+                                        color={colors.lightGreen}
+                                    />
+                                </View>
+                            );
+                        }
+                        return (
+                            <View>
+                                <Text style={{ color: colors.lightGreen }}>
+                                    No Games Yet
+                                </Text>
+                            </View>
+                        );
+                    }}
+                />
             ) : (
                 <View style={styles.container}>
                     <Text style={{ color: colors.lightGreen }}>
