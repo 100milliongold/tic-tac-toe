@@ -6,6 +6,8 @@ import { useAuth } from "@contexts/auth-context";
 import { colors } from "@utils";
 import { getPlayer } from "./multiplayer-home.graphql";
 import { API, graphqlOperation } from "aws-amplify";
+import { GraphQLResult } from "@aws-amplify/api";
+import { GetPlayerQuery } from "@api";
 
 export default function MultiplayerHome(): ReactElement {
     const { user } = useAuth();
@@ -13,15 +15,15 @@ export default function MultiplayerHome(): ReactElement {
     const fetchPlayer = async (nextToken: string | null) => {
         if (user) {
             try {
-                const player = await API.graphql(
+                const player = (await API.graphql(
                     graphqlOperation(getPlayer, {
                         username: user.username,
                         limit: 1,
                         sortDirection: "DESC",
                         nextToken: nextToken
                     })
-                );
-                console.log(player);
+                )) as GraphQLResult<GetPlayerQuery>;
+                console.log(player.data?.getPlayer?.games?.items);
             } catch (error) {
                 Alert.alert("Error!", "An error has occurrend!");
             }
