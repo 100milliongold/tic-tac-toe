@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import {
     Alert,
-    ScrollView,
     View,
     FlatList,
     TouchableOpacity,
@@ -76,15 +75,44 @@ export default function MultiplayerHome(): ReactElement {
     };
 
     const renderGame = ({ item }: { item: PlayerGameType }) => {
+        if (!user) return null;
         const game = item?.game;
+        const opponent = game?.players?.items?.find(
+            playerGame => playerGame?.player.username !== user.username
+        );
         return (
-            <TouchableOpacity style={{ marginBottom: 20 }}>
-                <Text style={{ color: colors.lightGreen }}>
-                    {game?.owners[0]}
+            <TouchableOpacity
+                style={{
+                    backgroundColor: colors.purple,
+                    padding: 15,
+                    borderTopWidth: 1,
+                    borderColor: colors.lightPurple,
+                    marginBottom: 20
+                }}
+            >
+                <Text
+                    style={{
+                        color: colors.lightGreen,
+                        textAlign: "center",
+                        fontSize: 17,
+                        marginBottom: 10
+                    }}
+                >
+                    {opponent?.player.name} ({opponent?.player.username})
                 </Text>
-                <Text style={{ color: colors.lightGreen }}>
-                    {game?.owners[1]}
-                </Text>
+                {(game?.status === "REQUESTED" ||
+                    game?.status === "ACTIVE") && (
+                    <Text
+                        style={{
+                            color: colors.lightGreen,
+                            textAlign: "center"
+                        }}
+                    >
+                        {game.turn === user.username
+                            ? "Your Turn!"
+                            : `Waiting for ${opponent?.player.username}`}
+                    </Text>
+                )}
             </TouchableOpacity>
         );
     };
@@ -96,61 +124,81 @@ export default function MultiplayerHome(): ReactElement {
     return (
         <GradientBackground>
             {user ? (
-                <FlatList
-                    contentContainerStyle={styles.container}
-                    data={playerGames}
-                    renderItem={renderGame}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={() => {
-                                fetchPlayer(null);
-                            }}
-                            tintColor={colors.lightGreen}
-                        />
-                    }
-                    keyExtractor={playerGame =>
-                        playerGame
-                            ? playerGame.game.id
-                            : `${new Date().getTime()}`
-                    }
-                    ListFooterComponent={() => {
-                        if (!nextToken) return null;
-                        return (
-                            <Button
-                                loading={loading && !refreshing}
-                                title="Load More"
-                                onPress={() => {
-                                    fetchPlayer(nextToken);
+                <>
+                    <FlatList
+                        contentContainerStyle={styles.container}
+                        data={playerGames}
+                        renderItem={renderGame}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={() => {
+                                    fetchPlayer(null);
                                 }}
+                                tintColor={colors.lightGreen}
                             />
-                        );
-                    }}
-                    ListEmptyComponent={() => {
-                        if (loading) {
+                        }
+                        keyExtractor={playerGame =>
+                            playerGame
+                                ? playerGame.game.id
+                                : `${new Date().getTime()}`
+                        }
+                        ListFooterComponent={() => {
+                            if (!nextToken) return null;
                             return (
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        justifyContent: "center",
-                                        alignItems: "center"
+                                <Button
+                                    style={{ marginTop: 20 }}
+                                    loading={loading && !refreshing}
+                                    title="Load More"
+                                    onPress={() => {
+                                        fetchPlayer(nextToken);
                                     }}
-                                >
-                                    <ActivityIndicator
-                                        color={colors.lightGreen}
-                                    />
+                                />
+                            );
+                        }}
+                        ListEmptyComponent={() => {
+                            if (loading) {
+                                return (
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}
+                                    >
+                                        <ActivityIndicator
+                                            color={colors.lightGreen}
+                                        />
+                                    </View>
+                                );
+                            }
+                            return (
+                                <View>
+                                    <Text style={{ color: colors.lightGreen }}>
+                                        No Games Yet
+                                    </Text>
                                 </View>
                             );
-                        }
-                        return (
-                            <View>
-                                <Text style={{ color: colors.lightGreen }}>
-                                    No Games Yet
-                                </Text>
-                            </View>
-                        );
-                    }}
-                />
+                        }}
+                    />
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: colors.lightPurple,
+                            padding: 20,
+                            paddingBottom: 30
+                        }}
+                    >
+                        <Text
+                            style={{
+                                color: colors.lightGreen,
+                                textAlign: "center",
+                                fontSize: 17
+                            }}
+                        >
+                            New Game
+                        </Text>
+                    </TouchableOpacity>
+                </>
             ) : (
                 <View style={styles.container}>
                     <Text style={{ color: colors.lightGreen }}>
