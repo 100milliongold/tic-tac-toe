@@ -5,9 +5,10 @@ import {
     View,
     FlatList,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    RefreshControl
 } from "react-native";
-import { GradientBackground, Text } from "@components";
+import { GradientBackground, Text, Button } from "@components";
 import styles from "./multiplayer-home.style";
 import { useAuth } from "@contexts/auth-context";
 import { colors } from "@utils";
@@ -34,11 +35,19 @@ export default function MultiplayerHome(): ReactElement {
 
     const [loading, setLoading] = useState(false);
 
-    const fetchPlayer = async (nextToken: string | null | undefined) => {
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchPlayer = async (
+        nextToken: string | null | undefined,
+        init = false
+    ) => {
         if (nextToken === undefined) nextToken = null;
 
         if (user) {
             setLoading(true);
+            if (nextToken === null && !init) {
+                setRefreshing(true);
+            }
             try {
                 const player = (await API.graphql(
                     graphqlOperation(getPlayer, {
@@ -48,15 +57,21 @@ export default function MultiplayerHome(): ReactElement {
                         nextToken: nextToken
                     })
                 )) as GraphQLResult<GetPlayerQuery>;
-
                 if (player.data?.getPlayer?.games) {
-                    setPlayerGames(player.data.getPlayer.games.items);
+                    const newPlayerGames =
+                        player.data.getPlayer.games.items || [];
+                    setPlayerGames(
+                        !playerGames || nextToken === null
+                            ? newPlayerGames
+                            : [...playerGames, ...newPlayerGames]
+                    );
                     setNextToken(player.data.getPlayer.games.nextToken);
                 }
             } catch (error) {
                 Alert.alert("Error!", "An error has occurrend!");
             }
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
@@ -75,7 +90,7 @@ export default function MultiplayerHome(): ReactElement {
     };
 
     useEffect(() => {
-        fetchPlayer(null);
+        fetchPlayer(null, true);
     }, []);
 
     return (
@@ -85,11 +100,32 @@ export default function MultiplayerHome(): ReactElement {
                     contentContainerStyle={styles.container}
                     data={playerGames}
                     renderItem={renderGame}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={() => {
+                                fetchPlayer(null);
+                            }}
+                            tintColor={colors.lightGreen}
+                        />
+                    }
                     keyExtractor={playerGame =>
                         playerGame
                             ? playerGame.game.id
                             : `${new Date().getTime()}`
                     }
+                    ListFooterComponent={() => {
+                        if (!nextToken) return null;
+                        return (
+                            <Button
+                                loading={loading && !refreshing}
+                                title="Load More"
+                                onPress={() => {
+                                    fetchPlayer(nextToken);
+                                }}
+                            />
+                        );
+                    }}
                     ListEmptyComponent={() => {
                         if (loading) {
                             return (
