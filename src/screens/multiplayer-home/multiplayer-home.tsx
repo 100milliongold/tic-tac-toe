@@ -152,6 +152,7 @@ export default function MultiplayerHome(): ReactElement {
                     margin: 0
                 }}
                 backdropOpacity={0.75}
+                avoidKeyboard
                 onBackButtonPress={() => {
                     setPlayersModal(false);
                 }}
