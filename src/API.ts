@@ -122,3 +122,22 @@ export type onUpdateGameByIdSubscription = {
     winner?: string | null,
   } | null,
 };
+
+
+export type searchPlayersQueryVariables = {
+  limit?: number | null,
+  nextToken?: string | null,
+  searchString?: string | null,
+};
+
+export type searchPlayersQuery = {
+  searchPlayers:  {
+    __typename: "SearchablePlayerConnection",
+    items:  Array< {
+      __typename: "Player",
+      name: string,
+      username: string,
+    } | null > | null,
+    nextToken: string | null,
+  } | null,
+};
