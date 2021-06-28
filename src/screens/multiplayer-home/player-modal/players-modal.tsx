@@ -3,7 +3,10 @@ import {
     Dimensions,
     View,
     Alert,
-    TextInput as NativeTextInput
+    TextInput as NativeTextInput,
+    FlatList,
+    ActivityIndicator,
+    TouchableOpacity
 } from "react-native";
 import { GradientBackground, Text, TextInput } from "@components";
 import { API, graphqlOperation } from "aws-amplify";
@@ -31,9 +34,17 @@ type PlayersListType = Exclude<
 export default function PlayersModal(): ReactElement {
     const [players, setPlayers] = useState<PlayersListType>(null);
 
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const [submittedQuery, setSubmittedQuery] = useState("");
+
+    const [loading, setLoading] = useState(false);
+
     const inputRef = useRef<NativeTextInput | null>(null);
 
     const fetchPlayers = async (searchString: string) => {
+        setLoading(true);
+        setSubmittedQuery(searchString);
         try {
             const players = (await API.graphql(
                 graphqlOperation(searchPlayers, {
@@ -44,6 +55,8 @@ export default function PlayersModal(): ReactElement {
             // console.log("players: ", players.data?.searchPlayers?.items);
 
             if (players.data?.searchPlayers) {
+                // console.log(players.data.searchPlayers.items);
+
                 setPlayers(players.data.searchPlayers.items);
             }
         } catch (error) {
@@ -52,6 +65,7 @@ export default function PlayersModal(): ReactElement {
                 "An error has occurred. Please try again later!"
             );
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -76,6 +90,11 @@ export default function PlayersModal(): ReactElement {
                 >
                     <TextInput
                         ref={inputRef}
+                        value={searchQuery}
+                        onChangeText={text => setSearchQuery(text)}
+                        onSubmitEditing={() => {
+                            fetchPlayers(searchQuery);
+                        }}
                         style={{
                             borderBottomWidth: 0,
                             backgroundColor: colors.darkPurple
@@ -83,6 +102,55 @@ export default function PlayersModal(): ReactElement {
                         placeholder="Type to search by username or name."
                         returnKeyType="search"
                     />
+                </View>
+                <View style={{ flex: 1 }}>
+                    {loading ? (
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            <ActivityIndicator color={colors.lightGreen} />
+                        </View>
+                    ) : (
+                        <FlatList
+                            data={players}
+                            renderItem={({ item }) => {
+                                return (
+                                    <TouchableOpacity>
+                                        <Text
+                                            style={{ color: colors.lightGreen }}
+                                        >
+                                            {item?.name}
+                                        </Text>
+                                        <Text
+                                            style={{ color: colors.lightGreen }}
+                                        >
+                                            {item?.username}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            }}
+                            keyExtractor={player =>
+                                player?.username || `${new Date().getTime()}`
+                            }
+                            ListEmptyComponent={() => {
+                                return (
+                                    <View>
+                                        <Text
+                                            style={{ color: colors.lightGreen }}
+                                        >
+                                            {submittedQuery
+                                                ? "No results found!"
+                                                : "Type to search by name or username"}
+                                        </Text>
+                                    </View>
+                                );
+                            }}
+                        />
+                    )}
                 </View>
             </GradientBackground>
         </View>
