@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect, useState, useRef } from "react";
 import {
-    Dimensions,
     View,
     Alert,
     TextInput as NativeTextInput,
@@ -14,8 +13,7 @@ import { searchPlayers } from "../multiplayer-home.graphql";
 import { GraphQLResult } from "@aws-amplify/api";
 import { searchPlayersQuery } from "@api";
 import { colors } from "@utils";
-
-const SCREEN_HEIGHT = Dimensions.get("screen").height;
+import styles from "./players-modal.styles";
 
 /**
  * Exclude
@@ -75,19 +73,9 @@ export default function PlayersModal(): ReactElement {
     }, []);
 
     return (
-        <View
-            style={{
-                height: SCREEN_HEIGHT * 0.6,
-                marginTop: SCREEN_HEIGHT * 0.4
-            }}
-        >
+        <View style={styles.modalContainer}>
             <GradientBackground>
-                <View
-                    style={{
-                        padding: 20,
-                        backgroundColor: colors.purple
-                    }}
-                >
+                <View style={styles.searchContainer}>
                     <TextInput
                         ref={inputRef}
                         value={searchQuery}
@@ -116,16 +104,21 @@ export default function PlayersModal(): ReactElement {
                         </View>
                     ) : (
                         <FlatList
+                            contentContainerStyle={{ padding: 20 }}
                             data={players}
                             renderItem={({ item }) => {
                                 return (
-                                    <TouchableOpacity>
+                                    <TouchableOpacity style={styles.playerItem}>
                                         <Text
-                                            style={{ color: colors.lightGreen }}
+                                            style={{
+                                                color: colors.lightGreen,
+                                                fontSize: 17
+                                            }}
                                         >
                                             {item?.name}
                                         </Text>
                                         <Text
+                                            weight="400"
                                             style={{ color: colors.lightGreen }}
                                         >
                                             {item?.username}
