@@ -43,7 +43,7 @@ type MultiPlayerGameProps = {
     route: MultiplayerGameScreenRouteProp;
 };
 
-const SCREEM_WIDTH = Dimensions.get("screen").width;
+const SCREEN_WIDTH = Dimensions.get("screen").width;
 
 export default function MultiplayerGame({
     navigation,
@@ -60,6 +60,14 @@ export default function MultiplayerGame({
     const playSound = useSounds();
     const opponentUsername =
         game && user && game.owners.find(p => p !== user.username);
+
+    const player1 = game?.players?.items && game.players.items[0];
+    const player2 = game?.players?.items && game.players.items[1];
+
+    const isActive = () => {
+        return game && (game.status === "ACTIVE" || game.status === "REQUESTED");
+    };
+
     // console.log(gameID , invitee);
 
     const initGame = async () => {
@@ -100,6 +108,8 @@ export default function MultiplayerGame({
     };
 
     const playTurn = async (index: Moves) => {
+        console.log(index);
+        
         setPlayingTurn(index);
         try {
             const playMoveRes = (await API.graphql(
@@ -182,21 +192,75 @@ export default function MultiplayerGame({
                     </View>
                 )}
                 {game && user && (
-                    <Board
-                        size={SCREEM_WIDTH - 60}
-                        loading={playingTurn}
-                        gameResult={gameResult}
-                        disabled={
-                            game.turn === user.username ||
-                            playingTurn !== false ||
-                            (game.status !== "ACTIVE" &&
-                                game.status !== "REQUESTED")
-                        }
-                        state={game.state as BoardState}
-                        onCellPressed={index => {
-                            playTurn(index as Moves);
-                        }}
-                    />
+                    <>
+                        <View style={{ width: SCREEN_WIDTH - 60 }}>
+                            <Text style={styles.turn} numberOfLines={1}>
+                                {game.turn === user.username && isActive() && "Your Turn"}
+                                {game.turn === opponentUsername &&
+                                    isActive() &&
+                                    `Waiting for ${opponentUsername}`}
+                                {!isActive() && "Game Over"}
+                            </Text>
+                            <View style={styles.gameInfo}>
+                                <View
+                                    style={[
+                                        styles.player,
+                                        game.turn === player1?.player.username &&
+                                            isActive() &&
+                                            styles.playerTurn,
+                                        { alignItems: "flex-end" }
+                                    ]}
+                                >
+                                    <Text style={styles.playerName} numberOfLines={1}>
+                                        {player1?.player.name}
+                                    </Text>
+                                    <Text
+                                        weight="400"
+                                        style={styles.playerUsername}
+                                        numberOfLines={1}
+                                    >
+                                        {player1?.player.username}
+                                    </Text>
+                                </View>
+                                <View style={styles.vs}>
+                                    <Text style={styles.vsText}>Vs</Text>
+                                </View>
+                                <View
+                                    style={[
+                                        styles.player,
+                                        game.turn === player2?.player.username &&
+                                            isActive() &&
+                                            styles.playerTurn
+                                    ]}
+                                >
+                                    <Text style={styles.playerName} numberOfLines={1}>
+                                        {player2?.player.name}
+                                    </Text>
+                                    <Text
+                                        weight="400"
+                                        style={styles.playerUsername}
+                                        numberOfLines={1}
+                                    >
+                                        {player2?.player.username}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                        <Board
+                            size={SCREEN_WIDTH - 60}
+                            state={game.state as BoardState}
+                            loading={playingTurn}
+                            gameResult={gameResult}
+                            disabled={
+                                game.turn !== user.username ||
+                                playingTurn !== false ||
+                                (game.status !== "ACTIVE" && game.status !== "REQUESTED")
+                            }
+                            onCellPressed={index => {
+                                playTurn(index as Moves);
+                            }}
+                        />
+                    </>
                 )}
                 {game && user && game.status === "FINISHED" && (
                     <View style={styles.modal}>

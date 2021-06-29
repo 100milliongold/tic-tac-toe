@@ -22,6 +22,41 @@ export const styles = StyleSheet.create({
         fontSize: 28,
         textAlign: "center",
         marginBottom: 30
+    },
+    turn: {
+        color: colors.lightGreen,
+        fontSize: 22,
+        textAlign: "center",
+        marginBottom: 20
+    },
+    gameInfo: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 80
+    },
+    playerName: {
+        color: colors.darkPurple
+    },
+    playerUsername: {
+        color: colors.darkPurple
+    },
+    player: {
+        width: "40%",
+        backgroundColor: colors.lightGreen,
+        borderWidth: 1,
+        borderColor: colors.lightPurple,
+        padding: 10
+    },
+    playerTurn: {
+        borderWidth: 3
+    },
+    vs: {
+        width: "10%"
+    },
+    vsText: {
+        color: colors.lightGreen,
+        textAlign: "center"
     }
 });
 
