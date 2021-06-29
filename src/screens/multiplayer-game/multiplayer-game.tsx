@@ -11,7 +11,14 @@ import { GraphQLResult } from "@aws-amplify/api";
 import { getGameQuery, startGameMutation, playMoveMutation } from "@api";
 import { useAuth } from "@contexts/auth-context";
 import styles from "./multiplayer-game.styles";
-import { BoardState, colors, Moves, getErrorMessage } from "@utils";
+import {
+    BoardState,
+    colors,
+    Moves,
+    getErrorMessage,
+    onUpdateGameById
+} from "@utils";
+import Observable from "zen-observable";
 
 type GameType = getGameQuery["getGame"];
 type MultiplayerGameScreenNavigationProp = StackNavigationProp<
@@ -97,6 +104,31 @@ export default function MultiplayerGame({
     };
 
     useEffect(() => {
+        if (gameID) {
+            const gameUpdates = API.graphql(
+                graphqlOperation(onUpdateGameById, {
+                    id: gameID
+                })
+            ) as unknown as Observable<{ [key: string]: any }>;
+
+            const subscription = gameUpdates.subscribe({
+                next: ({ value }) => {
+                    // console.log(value);
+                    const newGame = value.data.onUpdateGameById;
+                    if (newGame && game) {
+                        const { status, state, turn, winner } = newGame;
+                        setGame({ ...game, status, state, turn, winner });
+                    }
+                }
+            });
+
+            return () => {
+                subscription.unsubscribe();
+            };
+        }
+    }, [gameID]);
+
+    useEffect(() => {
         initGame();
     }, []);
 
@@ -118,7 +150,10 @@ export default function MultiplayerGame({
                     size={300}
                     loading={playingTurn}
                     disabled={
-                        game.turn === user.username || playingTurn !== false
+                        game.turn === user.username ||
+                        playingTurn !== false ||
+                        (game.status !== "ACTIVE" &&
+                            game.status !== "REQUESTED")
                     }
                     state={game.state as BoardState}
                     onCellPressed={index => {

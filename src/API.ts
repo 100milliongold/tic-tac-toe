@@ -179,21 +179,6 @@ export type GetPlayerQuery = {
   } | null,
 };
 
-export type onUpdateGameByIdSubscriptionVariables = {
-  id: string,
-};
-
-export type onUpdateGameByIdSubscription = {
-  onUpdateGameById?:  {
-    __typename: "Game",
-    id: string,
-    status: GameStatus,
-    turn: string,
-    state: Array< Symbol | null >,
-    winner?: string | null,
-  } | null,
-};
-
 export type searchPlayersQueryVariables = {
   limit?: number | null,
   nextToken?: string | null,
@@ -209,5 +194,20 @@ export type searchPlayersQuery = {
       username: string,
     } | null > | null,
     nextToken?: string | null,
+  } | null,
+};
+
+export type onUpdateGameByIdSubscriptionVariables = {
+  id: string,
+};
+
+export type onUpdateGameByIdSubscription = {
+  onUpdateGameById?:  {
+    __typename: "Game",
+    id: string,
+    status: GameStatus,
+    turn: string,
+    state: Array< Symbol | null >,
+    winner?: string | null,
   } | null,
 };
