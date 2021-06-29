@@ -8,11 +8,15 @@ import styles from "./multiplayer-home.style";
 import { API, graphqlOperation } from "aws-amplify";
 import Observable from "zen-observable";
 
-export default function GameItem({
-    playerGame: playerGameProp
-}: {
+type GameItemProps = {
     playerGame: PlayerGameType;
-}): ReactElement | null {
+    onPress: () => void;
+};
+
+export default function GameItem({
+    playerGame: playerGameProp,
+    onPress
+}: GameItemProps): ReactElement | null {
     const { user } = useAuth();
     const [playerGame, setPlayerGame] = useState(playerGameProp);
 
@@ -87,7 +91,12 @@ export default function GameItem({
     }, []);
 
     return (
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity
+            onPress={() => {
+                onPress();
+            }}
+            style={styles.item}
+        >
             <Animated.View
                 style={[
                     styles.itemBackgrond,

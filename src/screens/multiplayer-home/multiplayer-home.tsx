@@ -18,8 +18,21 @@ import { GetPlayerQuery } from "@api";
 import GameItem from "./game-item";
 import Modal from "react-native-modal";
 import PlayersModal from "./player-modal/players-modal";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigatorParams } from "@config/navigator";
 
-export default function MultiplayerHome(): ReactElement {
+type MultiplayerHomeScreenNavigationProp = StackNavigationProp<
+    StackNavigatorParams,
+    "MultiplayerHome"
+>;
+
+type MultiplayerHomeProps = {
+    navigation: MultiplayerHomeScreenNavigationProp;
+};
+
+export default function MultiplayerHome({
+    navigation
+}: MultiplayerHomeProps): ReactElement {
     const { user } = useAuth();
 
     const [playerGames, setPlayerGames] =
@@ -82,7 +95,16 @@ export default function MultiplayerHome(): ReactElement {
                         contentContainerStyle={styles.container}
                         data={playerGames}
                         renderItem={({ item }) => (
-                            <GameItem playerGame={item} />
+                            <GameItem
+                                onPress={() => {
+                                    if (item?.game) {
+                                        navigation.navigate("MultiplayerGame", {
+                                            gameID: item?.game.id
+                                        });
+                                    }
+                                }}
+                                playerGame={item}
+                            />
                         )}
                         refreshControl={
                             <RefreshControl
@@ -160,7 +182,15 @@ export default function MultiplayerHome(): ReactElement {
                     setPlayersModal(false);
                 }}
             >
-                <PlayersModal />
+                <PlayersModal
+                    onItemPress={username => {
+                        // console.log(username);
+                        setPlayersModal(false);
+                        navigation.navigate("MultiplayerGame", {
+                            invitee: username
+                        });
+                    }}
+                />
             </Modal>
         </GradientBackground>
     );

@@ -29,7 +29,13 @@ type PlayersListType = Exclude<
     null
 >["items"];
 
-export default function PlayersModal(): ReactElement {
+type PlayersModalProps = {
+    onItemPress: (username: string) => void;
+};
+
+export default function PlayersModal({
+    onItemPress
+}: PlayersModalProps): ReactElement {
     const [players, setPlayers] = useState<PlayersListType>(null);
 
     const [searchQuery, setSearchQuery] = useState("");
@@ -108,7 +114,14 @@ export default function PlayersModal(): ReactElement {
                             data={players}
                             renderItem={({ item }) => {
                                 return (
-                                    <TouchableOpacity style={styles.playerItem}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (item) {
+                                                onItemPress(item.username);
+                                            }
+                                        }}
+                                        style={styles.playerItem}
+                                    >
                                         <Text
                                             style={{
                                                 color: colors.lightGreen,
