@@ -16,7 +16,9 @@ import {
     colors,
     Moves,
     getErrorMessage,
-    onUpdateGameById
+    onUpdateGameById,
+    isTerminal,
+    useSounds
 } from "@utils";
 import Observable from "zen-observable";
 
@@ -42,9 +44,12 @@ export default function MultiplayerGame({
     const { gameID: existingGameID, invitee } = route.params;
     const [gameID, setGameID] = useState<string | null>(null);
     const [game, setGame] = useState<GameType | null>(null);
+    const [finished, setFinished] = useState(false);
     const [loading, setLoading] = useState(false);
     const [playingTurn, setPlayingTurn] = useState<Moves | false>(false);
     const { user } = useAuth();
+    const gameResult = game ? isTerminal(game.state as BoardState) : false;
+    const playSound = useSounds();
     // console.log(gameID , invitee);
 
     const initGame = async () => {
@@ -69,6 +74,9 @@ export default function MultiplayerGame({
                     })
                 )) as GraphQLResult<getGameQuery>;
                 if (getGameRes.data?.getGame) {
+                    if (getGameRes.data.getGame.status === "FINISHED") {
+                        setFinished(true);
+                    }
                     // console.log(getGameRes.data.getGame);
                     setGame(getGameRes.data.getGame);
                     setGameID(gameID);
@@ -104,7 +112,7 @@ export default function MultiplayerGame({
     };
 
     useEffect(() => {
-        if (gameID) {
+        if (game && (game.status === "ACTIVE" || game.status === "REQUESTED")) {
             const gameUpdates = API.graphql(
                 graphqlOperation(onUpdateGameById, {
                     id: gameID
@@ -118,6 +126,11 @@ export default function MultiplayerGame({
                     if (newGame && game) {
                         const { status, state, turn, winner } = newGame;
                         setGame({ ...game, status, state, turn, winner });
+                        if (user) {
+                            user.username === turn
+                                ? playSound("pop1")
+                                : playSound("pop2");
+                        }
                     }
                 }
             });
@@ -127,6 +140,18 @@ export default function MultiplayerGame({
             };
         }
     }, [gameID]);
+
+    useEffect(() => {
+        if (game && game.status === "FINISHED" && !finished) {
+            if (game.winner === null) {
+                playSound("draw");
+            } else if (user && game.winner === user.username) {
+                playSound("win");
+            } else {
+                playSound("loss");
+            }
+        }
+    }, [game]);
 
     useEffect(() => {
         initGame();
@@ -149,6 +174,7 @@ export default function MultiplayerGame({
                 <Board
                     size={300}
                     loading={playingTurn}
+                    gameResult={gameResult}
                     disabled={
                         game.turn === user.username ||
                         playingTurn !== false ||
