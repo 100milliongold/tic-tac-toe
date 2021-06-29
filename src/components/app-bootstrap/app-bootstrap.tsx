@@ -12,6 +12,8 @@ import { Auth, Hub } from "aws-amplify";
 
 import { useAuth } from "@contexts/auth-context";
 
+import { initNotifications } from "@utils";
+
 type AppBootstrapProps = {
     children: ReactNode;
 };
@@ -32,6 +34,7 @@ export default function AppBootstrap({
             try {
                 const user = await Auth.currentAuthenticatedUser();
                 setUser(user);
+                initNotifications();
             } catch (error) {
                 setUser(null);
             }
@@ -47,6 +50,7 @@ export default function AppBootstrap({
                     break;
                 case "signIn":
                     setUser(data);
+                    initNotifications();
                     break;
                 default:
                     break;
