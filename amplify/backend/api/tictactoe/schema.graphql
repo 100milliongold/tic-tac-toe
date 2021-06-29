@@ -43,6 +43,7 @@ type Player
     name: String!
     email: AWSEmail!
     games: [PlayerGame] @connection(keyName: "byPlayer", fields: ["username"])
+    token: [ExpoToken] @connection(keyName: "byPlayer", fields: ["username"])
 }
 
 type Game
@@ -101,4 +102,27 @@ type PlayerGame
     owners: [String!]!
     game: Game! @connection(fields: ["gameID"])
     player: Player! @connection(fields: ["playerUsername"])
+}
+
+type ExpoToken
+    @model
+    @key(fields: ["token"])
+    @key(name: "byPlayer", fields: ["playerUsername"])
+    @auth(
+        rules: [
+            {
+                allow: owner
+                ownerField: "playerUsername"
+                operations: [read, delete]
+            }
+            {
+                allow: private
+                provider: iam
+                operations: [read, create, update, delete]
+            }
+        ]
+    ) {
+    id: ID!
+    token: String!
+    playerUsername: String!
 }
