@@ -65,7 +65,9 @@ export default function MultiplayerGame({
     const player2 = game?.players?.items && game.players.items[1];
 
     const isActive = () => {
-        return game && (game.status === "ACTIVE" || game.status === "REQUESTED");
+        return (
+            game && (game.status === "ACTIVE" || game.status === "REQUESTED")
+        );
     };
 
     // console.log(gameID , invitee);
@@ -82,7 +84,6 @@ export default function MultiplayerGame({
                 )) as GraphQLResult<startGameMutation>;
                 if (startGameRes.data?.startGame) {
                     gameID = startGameRes.data.startGame.id;
-                    // console.log(startGameRes.data.startGame.id);
                 }
             }
             if (gameID) {
@@ -92,24 +93,20 @@ export default function MultiplayerGame({
                     })
                 )) as GraphQLResult<getGameQuery>;
                 if (getGameRes.data?.getGame) {
-                    if (getGameRes.data.getGame.status === "FINISHED") {
+                    if (getGameRes.data?.getGame.status === "FINISHED") {
                         setFinished(true);
                     }
-                    // console.log(getGameRes.data.getGame);
-                    setGame(getGameRes.data.getGame);
+                    setGame(getGameRes.data?.getGame);
                     setGameID(gameID);
                 }
             }
         } catch (error) {
-            console.log(error);
             Alert.alert("Error!", getErrorMessage(error));
         }
         setLoading(false);
     };
 
     const playTurn = async (index: Moves) => {
-        console.log(index);
-        
         setPlayingTurn(index);
         try {
             const playMoveRes = (await API.graphql(
@@ -119,12 +116,10 @@ export default function MultiplayerGame({
                 })
             )) as GraphQLResult<playMoveMutation>;
             if (game && playMoveRes.data?.playMove) {
-                const { status, state, turn, winner } =
+                const { status, state, winner, turn } =
                     playMoveRes.data.playMove;
-                setGame({ ...game, status, state, turn, winner });
+                setGame({ ...game, status, state, winner, turn });
             }
-
-            console.log(playMoveRes);
         } catch (error) {
             Alert.alert("Error!", getErrorMessage(error));
         }
@@ -132,7 +127,7 @@ export default function MultiplayerGame({
     };
 
     useEffect(() => {
-        if (game && (game.status === "ACTIVE" || game.status === "REQUESTED")) {
+        if (game && (game.status === "REQUESTED" || game.status === "ACTIVE")) {
             const gameUpdates = API.graphql(
                 graphqlOperation(onUpdateGameById, {
                     id: gameID
@@ -141,11 +136,10 @@ export default function MultiplayerGame({
 
             const subscription = gameUpdates.subscribe({
                 next: ({ value }) => {
-                    // console.log(value);
                     const newGame = value.data.onUpdateGameById;
                     if (newGame && game) {
-                        const { status, state, turn, winner } = newGame;
-                        setGame({ ...game, status, state, turn, winner });
+                        const { status, state, winner, turn } = newGame;
+                        setGame({ ...game, status, state, winner, turn });
                         if (user) {
                             user.username === turn
                                 ? playSound("pop1")
@@ -195,7 +189,9 @@ export default function MultiplayerGame({
                     <>
                         <View style={{ width: SCREEN_WIDTH - 60 }}>
                             <Text style={styles.turn} numberOfLines={1}>
-                                {game.turn === user.username && isActive() && "Your Turn"}
+                                {game.turn === user.username &&
+                                    isActive() &&
+                                    "Your Turn"}
                                 {game.turn === opponentUsername &&
                                     isActive() &&
                                     `Waiting for ${opponentUsername}`}
@@ -205,13 +201,17 @@ export default function MultiplayerGame({
                                 <View
                                     style={[
                                         styles.player,
-                                        game.turn === player1?.player.username &&
+                                        game.turn ===
+                                            player1?.player.username &&
                                             isActive() &&
                                             styles.playerTurn,
                                         { alignItems: "flex-end" }
                                     ]}
                                 >
-                                    <Text style={styles.playerName} numberOfLines={1}>
+                                    <Text
+                                        style={styles.playerName}
+                                        numberOfLines={1}
+                                    >
                                         {player1?.player.name}
                                     </Text>
                                     <Text
@@ -228,12 +228,16 @@ export default function MultiplayerGame({
                                 <View
                                     style={[
                                         styles.player,
-                                        game.turn === player2?.player.username &&
+                                        game.turn ===
+                                            player2?.player.username &&
                                             isActive() &&
                                             styles.playerTurn
                                     ]}
                                 >
-                                    <Text style={styles.playerName} numberOfLines={1}>
+                                    <Text
+                                        style={styles.playerName}
+                                        numberOfLines={1}
+                                    >
                                         {player2?.player.name}
                                     </Text>
                                     <Text
@@ -254,7 +258,8 @@ export default function MultiplayerGame({
                             disabled={
                                 game.turn !== user.username ||
                                 playingTurn !== false ||
-                                (game.status !== "ACTIVE" && game.status !== "REQUESTED")
+                                (game.status !== "ACTIVE" &&
+                                    game.status !== "REQUESTED")
                             }
                             onCellPressed={index => {
                                 playTurn(index as Moves);
