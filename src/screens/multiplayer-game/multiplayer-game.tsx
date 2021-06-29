@@ -11,7 +11,7 @@ import { GraphQLResult } from "@aws-amplify/api";
 import { getGameQuery, startGameMutation, playMoveMutation } from "@api";
 import { useAuth } from "@contexts/auth-context";
 import styles from "./multiplayer-game.styles";
-import { BoardState, colors, Moves } from "@utils";
+import { BoardState, colors, Moves, getErrorMessage } from "@utils";
 
 type GameType = getGameQuery["getGame"];
 type MultiplayerGameScreenNavigationProp = StackNavigationProp<
@@ -69,10 +69,7 @@ export default function MultiplayerGame({
             }
         } catch (error) {
             console.log(error);
-            Alert.alert(
-                "Error!",
-                "An error has occurred. Please try again later!"
-            );
+            Alert.alert("Error!", getErrorMessage(error));
         }
         setLoading(false);
     };
@@ -94,11 +91,7 @@ export default function MultiplayerGame({
 
             console.log(playMoveRes);
         } catch (error) {
-            if (error.errors && error.errors.length > 0) {
-                Alert.alert("Error!", error.errors[0].message);
-            } else {
-                Alert.alert("Error!", error.message || "An error has occured");
-            }
+            Alert.alert("Error!", getErrorMessage(error));
         }
         setPlayingTurn(false);
     };
