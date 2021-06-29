@@ -1,4 +1,7 @@
 /* eslint-disable */
+/**
+ * amplify function 연동시 에러 조치
+ */
 const blacklist = require("metro-config/src/defaults/blacklist");
 module.exports = {
     resolver: {

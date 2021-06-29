@@ -1,38 +1,42 @@
 {
-    "dev": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-tictactoe-dev-172321-authRole",
-            "UnauthRoleArn": "arn:aws:iam::581386253256:role/amplify-tictactoe-dev-172321-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::581386253256:role/amplify-tictactoe-dev-172321-authRole",
-            "Region": "us-east-1",
-            "DeploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-            "UnauthRoleName": "amplify-tictactoe-dev-172321-unauthRole",
-            "StackName": "amplify-tictactoe-dev-172321",
-            "StackId": "arn:aws:cloudformation:us-east-1:581386253256:stack/amplify-tictactoe-dev-172321/fcb9e120-bad6-11eb-9f15-12fa5e526083",
-            "AmplifyAppId": "d1eosr4dzxrntn"
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-tictactoe-dev-172321-authRole",
+      "UnauthRoleArn": "arn:aws:iam::581386253256:role/amplify-tictactoe-dev-172321-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::581386253256:role/amplify-tictactoe-dev-172321-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+      "UnauthRoleName": "amplify-tictactoe-dev-172321-unauthRole",
+      "StackName": "amplify-tictactoe-dev-172321",
+      "StackId": "arn:aws:cloudformation:us-east-1:581386253256:stack/amplify-tictactoe-dev-172321/fcb9e120-bad6-11eb-9f15-12fa5e526083",
+      "AmplifyAppId": "d1eosr4dzxrntn"
+    },
+    "categories": {
+      "auth": {
+        "tictactoef2f97a15": {}
+      },
+      "function": {
+        "postConfirmation": {
+          "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+          "s3Key": "amplify-builds/postConfirmation-3857776278386456616f-build.zip"
         },
-        "categories": {
-            "auth": {
-                "tictactoef2f97a15": {}
-            },
-            "function": {
-                "postConfirmation": {
-                    "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-                    "s3Key": "amplify-builds/postConfirmation-3154555469682b74506b-build.zip"
-                },
-                "preAuth": {
-                    "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-                    "s3Key": "amplify-builds/preAuth-41564671414c38526655-build.zip"
-                },
-                "playMove": {
-                    "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-                    "s3Key": "amplify-builds/playMove-38566458346155475947-build.zip"
-                },
-                "startGame": {
-                    "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
-                    "s3Key": "amplify-builds/startGame-557571425a534c697969-build.zip"
-                }
-            }
+        "preAuth": {
+          "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+          "s3Key": "amplify-builds/preAuth-6655754d6f6534415132-build.zip"
+        },
+        "playMove": {
+          "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+          "s3Key": "amplify-builds/playMove-6541486f77386a7a494c-build.zip"
+        },
+        "startGame": {
+          "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+          "s3Key": "amplify-builds/startGame-67796e6f42372f585973-build.zip"
+        },
+        "addExpoToken": {
+          "deploymentBucketName": "amplify-tictactoe-dev-172321-deployment",
+          "s3Key": "amplify-builds/addExpoToken-6e564979676c75354476-build.zip"
         }
+      }
     }
+  }
 }
