@@ -1,7 +1,17 @@
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import { Platform } from "react-native";
+import gql from "graphql-tag";
+import { API, graphqlOperation } from "aws-amplify";
 
+const addExpoToken = gql`
+    mutation addExpoToken($token: String!) {
+        addExpoToken(token: $token) {
+            playerUsername
+            token
+        }
+    }
+`;
 const initNotifications = async (): Promise<void> => {
     if (Constants.isDevice) {
         /**
@@ -30,7 +40,17 @@ const initNotifications = async (): Promise<void> => {
          * Expo token 발급
          */
         const tokenRes = await Notifications.getExpoPushTokenAsync();
-        console.log(tokenRes);
+        // console.log(tokenRes);
+        try {
+            await API.graphql(
+                graphqlOperation(addExpoToken, {
+                    token: tokenRes.data
+                })
+            );
+        } catch (error) {
+            console.log(error);
+            //report
+        }
 
         /**
          * 만약 안드로이드일경우 별도의 채널을 생성
