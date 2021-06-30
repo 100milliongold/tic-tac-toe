@@ -130,84 +130,6 @@ export const onDeletePlayer = /* GraphQL */ `
     }
   }
 `;
-export const onCreateGame = /* GraphQL */ `
-  subscription OnCreateGame($owners: String) {
-    onCreateGame(owners: $owners) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const onUpdateGame = /* GraphQL */ `
-  subscription OnUpdateGame($owners: String) {
-    onUpdateGame(owners: $owners) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const onDeleteGame = /* GraphQL */ `
-  subscription OnDeleteGame($owners: String) {
-    onDeleteGame(owners: $owners) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
 export const onCreatePlayerGame = /* GraphQL */ `
   subscription OnCreatePlayerGame($owners: String) {
     onCreatePlayerGame(owners: $owners) {
@@ -327,6 +249,84 @@ export const onDeletePlayerGame = /* GraphQL */ `
         players {
           nextToken
         }
+      }
+    }
+  }
+`;
+export const onCreateGame = /* GraphQL */ `
+  subscription OnCreateGame($owners: String) {
+    onCreateGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onUpdateGame = /* GraphQL */ `
+  subscription OnUpdateGame($owners: String) {
+    onUpdateGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onDeleteGame = /* GraphQL */ `
+  subscription OnDeleteGame($owners: String) {
+    onDeleteGame(owners: $owners) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
       }
     }
   }

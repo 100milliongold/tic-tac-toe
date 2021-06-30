@@ -146,93 +146,6 @@ export const deletePlayer = /* GraphQL */ `
     }
   }
 `;
-export const createGame = /* GraphQL */ `
-  mutation CreateGame(
-    $input: CreateGameInput!
-    $condition: ModelGameConditionInput
-  ) {
-    createGame(input: $input, condition: $condition) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const updateGame = /* GraphQL */ `
-  mutation UpdateGame(
-    $input: UpdateGameInput!
-    $condition: ModelGameConditionInput
-  ) {
-    updateGame(input: $input, condition: $condition) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
-export const deleteGame = /* GraphQL */ `
-  mutation DeleteGame(
-    $input: DeleteGameInput!
-    $condition: ModelGameConditionInput
-  ) {
-    deleteGame(input: $input, condition: $condition) {
-      id
-      status
-      owners
-      initiator
-      turn
-      state
-      winner
-      createdAt
-      updatedAt
-      players {
-        items {
-          id
-          createdAt
-          gameID
-          playerUsername
-          owners
-          updatedAt
-        }
-        nextToken
-      }
-    }
-  }
-`;
 export const createPlayerGame = /* GraphQL */ `
   mutation CreatePlayerGame(
     $input: CreatePlayerGameInput!
@@ -361,6 +274,93 @@ export const deletePlayerGame = /* GraphQL */ `
         players {
           nextToken
         }
+      }
+    }
+  }
+`;
+export const createGame = /* GraphQL */ `
+  mutation CreateGame(
+    $input: CreateGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    createGame(input: $input, condition: $condition) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const updateGame = /* GraphQL */ `
+  mutation UpdateGame(
+    $input: UpdateGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    updateGame(input: $input, condition: $condition) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deleteGame = /* GraphQL */ `
+  mutation DeleteGame(
+    $input: DeleteGameInput!
+    $condition: ModelGameConditionInput
+  ) {
+    deleteGame(input: $input, condition: $condition) {
+      id
+      status
+      owners
+      initiator
+      turn
+      state
+      winner
+      createdAt
+      updatedAt
+      players {
+        items {
+          id
+          createdAt
+          gameID
+          playerUsername
+          owners
+          updatedAt
+        }
+        nextToken
       }
     }
   }

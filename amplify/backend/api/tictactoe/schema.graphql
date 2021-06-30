@@ -1,6 +1,7 @@
 type Mutation {
     startGame(invitee: String!): GameData
         @function(name: "startGame-${env}")
+        @aws_iam
         @aws_cognito_user_pools
 
     playMove(game: ID!, index: Int!): GameData
@@ -50,6 +51,29 @@ type Player
     token: [ExpoToken] @connection(keyName: "byPlayer", fields: ["username"])
 }
 
+type PlayerGame
+    @model(queries: null)
+    @key(name: "byGame", fields: ["gameID"])
+    @key(name: "byPlayer", fields: ["playerUsername", "createdAt"])
+    @auth(
+        rules: [
+            { allow: owner, ownerField: "owners", operations: [read] }
+            {
+                allow: private
+                provider: iam
+                operations: [read, create, update, delete]
+            }
+        ]
+    ) {
+    id: ID!
+    createdAt: String!
+    gameID: ID!
+    playerUsername: String!
+    owners: [String!]!
+    game: Game! @connection(fields: ["gameID"])
+    player: Player! @connection(fields: ["playerUsername"])
+}
+
 type Game
     @model
     @auth(
@@ -83,29 +107,6 @@ enum GameStatus {
 enum Symbol {
     x
     o
-}
-
-type PlayerGame
-    @model(queries: null)
-    @key(name: "byGame", fields: ["gameID"])
-    @key(name: "byPlayer", fields: ["playerUsername", "createdAt"])
-    @auth(
-        rules: [
-            { allow: owner, ownerField: "owners", operations: [read] }
-            {
-                allow: private
-                provider: iam
-                operations: [read, create, update, delete]
-            }
-        ]
-    ) {
-    id: ID!
-    createdAt: String!
-    gameID: ID!
-    playerUsername: String!
-    owners: [String!]!
-    game: Game! @connection(fields: ["gameID"])
-    player: Player! @connection(fields: ["playerUsername"])
 }
 
 type ExpoToken
