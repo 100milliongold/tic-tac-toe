@@ -21,7 +21,9 @@ const getExpoToken = gql`
 
 const createExpoToken = gql`
     mutation createExpoToken($token: String!, $playerUsername: String!) {
-        createExpoToken(input: { token: $token, playerUsername: $playerUsername }) {
+        createExpoToken(
+            input: { token: $token, playerUsername: $playerUsername }
+        ) {
             id
             token
             playerUsername
@@ -30,8 +32,14 @@ const createExpoToken = gql`
 `;
 
 const updateExpoToken = gql`
-    mutation updateExpoToken($id: ID!, $token: String!, $playerUsername: String!) {
-        updateExpoToken(input: { id: $id, token: $token, playerUsername: $playerUsername }) {
+    mutation updateExpoToken(
+        $id: ID!
+        $token: String!
+        $playerUsername: String!
+    ) {
+        updateExpoToken(
+            input: { id: $id, token: $token, playerUsername: $playerUsername }
+        ) {
             id
             token
             playerUsername
@@ -39,8 +47,7 @@ const updateExpoToken = gql`
     }
 `;
 
-
-exports.handler = async (event) => {
+exports.handler = async event => {
     const graphqlClient = new appsync.AWSAppSyncClient({
         url: process.env.API_TICTACTOE_GRAPHQLAPIENDPOINTOUTPUT,
         region: process.env.REGION,
@@ -55,7 +62,7 @@ exports.handler = async (event) => {
         disableOffline: true
     });
 
-    const player = event.identity.username
+    const player = event.identity.username;
 
     //1. Check if the token already exists and has the logged in user as the owner
     // 토큰이 이미 존재하고 로그인 한 사용자가 소유자로 있는지 확인하십시오.
