@@ -8,7 +8,9 @@ Amplify Params - DO NOT EDIT */
 
 const appsync = require("aws-appsync");
 const gql = require("graphql-tag");
+const { Expo } = require("expo-server-sdk")
 require("cross-fetch/polyfill");
+
 
 exports.handler = async event => {
     const graphqlClient = new appsync.AWSAppSyncClient({
@@ -35,6 +37,11 @@ exports.handler = async event => {
         query getPlayer($username: String!) {
             getPlayer(username: $username) {
                 id
+                tokens {
+                    items {
+                        token
+                    }
+                }
             }
         }
     `;
@@ -151,6 +158,24 @@ exports.handler = async event => {
 
     // 4. Send a push notification to the invitee
     // 초대받은 사람에게 푸시 알림 보내기
+
+    const inviteeTokens = inviteeResponse.data.getPlayer.tokens.items
+    // console.log(inviteeTokens);
+    const expo = new Expo();
+    const message = [];
+    for (const pushToken of inviteeTokens) {
+        // if(!Expo.isExpoPushToken(pushToken.token)){
+        //     continue;
+        // }
+        message.push({
+            to: pushToken.token,
+            sound: "default",
+            body: `${initiator} invited you to play a game!`,
+            data: {gameId: gameResponse.data.createGame.id },
+            badge: 1
+        })
+    }
+    console.log(message);
 
     return {
         id: gameResponse.data.createGame.id,
