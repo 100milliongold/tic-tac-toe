@@ -40,7 +40,7 @@ const initNotifications = async (): Promise<void> => {
          * Expo token 발급
          */
         const tokenRes = await Notifications.getExpoPushTokenAsync();
-        // console.log(tokenRes);
+        console.log(tokenRes);
         try {
             await API.graphql(
                 graphqlOperation(addExpoToken, {

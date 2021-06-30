@@ -175,7 +175,29 @@ exports.handler = async event => {
             badge: 1
         })
     }
-    console.log(message);
+    // console.log(message);
+    const chunks = expo.chunkPushNotifications(message)
+    const tickets = []
+    // console.log(chunks);
+    for (const chunk of chunks) {
+        try {
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk)
+            // console.log(ticketChunk);
+            for (let index = 0; index < ticketChunk.length; index++) {
+                const ticket = ticketChunk[index];
+                const expoToken = chunk[index].to;
+                tickets.push({
+                    expoToken,
+                    ticket
+                })
+            }
+        } catch (error) {
+            // reporting
+            console.log(error);
+        }
+    }
+
+    console.log(tickets);
 
     return {
         id: gameResponse.data.createGame.id,
