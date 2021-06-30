@@ -8,9 +8,8 @@ Amplify Params - DO NOT EDIT */
 
 const appsync = require("aws-appsync");
 const gql = require("graphql-tag");
-const { Expo } = require("expo-server-sdk")
+const { Expo } = require("expo-server-sdk");
 require("cross-fetch/polyfill");
-
 
 exports.handler = async event => {
     const graphqlClient = new appsync.AWSAppSyncClient({
@@ -159,7 +158,7 @@ exports.handler = async event => {
     // 4. Send a push notification to the invitee
     // 초대받은 사람에게 푸시 알림 보내기
 
-    const inviteeTokens = inviteeResponse.data.getPlayer.tokens.items
+    const inviteeTokens = inviteeResponse.data.getPlayer.tokens.items;
     // console.log(inviteeTokens);
     const expo = new Expo();
     const message = [];
@@ -171,17 +170,17 @@ exports.handler = async event => {
             to: pushToken.token,
             sound: "default",
             body: `${initiator} invited you to play a game!`,
-            data: {gameId: gameResponse.data.createGame.id },
+            data: { gameId: gameResponse.data.createGame.id },
             badge: 1
-        })
+        });
     }
     // console.log(message);
-    const chunks = expo.chunkPushNotifications(message)
-    const tickets = []
+    const chunks = expo.chunkPushNotifications(message);
+    const tickets = [];
     // console.log(chunks);
     for (const chunk of chunks) {
         try {
-            const ticketChunk = await expo.sendPushNotificationsAsync(chunk)
+            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
             // console.log(ticketChunk);
             for (let index = 0; index < ticketChunk.length; index++) {
                 const ticket = ticketChunk[index];
@@ -189,7 +188,7 @@ exports.handler = async event => {
                 tickets.push({
                     expoToken,
                     ticket
-                })
+                });
             }
         } catch (error) {
             // reporting
@@ -198,6 +197,37 @@ exports.handler = async event => {
     }
 
     console.log(tickets);
+
+    for (const ticketObj of tickets) {
+        const ticket = ticketObj.ticket;
+        const expoToken = ticketObj.expoToken;
+        if (ticket.status === "error") {
+            if (
+                ticket.details &&
+                ticket.details.error &&
+                ticket.details.error === "DeviceNotRegistered"
+            ) {
+                const deleteExpoToken = gql`
+                    mutation deleteExpoToken($token: String!) {
+                        deleteExpoToken(input: { token: $token }) {
+                            token
+                        }
+                    }
+                `;
+                try {
+                    await graphqlClient.mutate({
+                        mutation: deleteExpoToken,
+                        variables: {
+                            token: expoToken
+                        }
+                    });
+                } catch (error) {
+                    // report
+                }
+            }
+            console.log(ticket.details);
+        }
+    }
 
     return {
         id: gameResponse.data.createGame.id,
