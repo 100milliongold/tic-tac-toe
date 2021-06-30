@@ -27,7 +27,7 @@ const initNotifications = async (): Promise<void> => {
         if (existingStatus !== "granted") {
             const { status } = await Notifications.requestPermissionsAsync();
             finalStatus = status;
-        }
+        } 
 
         /**
          * 권한을 요청해도 승인이 없을경우 중단
