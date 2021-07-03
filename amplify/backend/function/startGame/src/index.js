@@ -159,29 +159,26 @@ exports.handler = async event => {
     // 초대받은 사람에게 푸시 알림 보내기
 
     const inviteeTokens = inviteeResponse.data.getPlayer.tokens.items;
-    // console.log(inviteeTokens);
     const expo = new Expo();
-    const message = [];
-    for (const pushToken of inviteeTokens) {
-        // if(!Expo.isExpoPushToken(pushToken.token)){
-        //     continue;
-        // }
-        message.push({
+    const messages = [];
+    for (let pushToken of inviteeTokens) {
+        if (!Expo.isExpoPushToken(pushToken.token)) {
+            continue;
+        }
+        messages.push({
             to: pushToken.token,
             sound: "default",
-            body: `${initiator} invited you to play a game!`,
+            bodu: `${initiator} invited you to play a game!`,
             data: { gameId: gameResponse.data.createGame.id },
             badge: 1
         });
     }
-    // console.log(message);
-    const chunks = expo.chunkPushNotifications(message);
+
+    const chunks = expo.chunkPushNotifications(messages);
     const tickets = [];
-    // console.log(chunks);
-    for (const chunk of chunks) {
+    for (let chunk of chunks) {
         try {
             const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            // console.log(ticketChunk);
             for (let index = 0; index < ticketChunk.length; index++) {
                 const ticket = ticketChunk[index];
                 const expoToken = chunk[index].to;
@@ -191,14 +188,13 @@ exports.handler = async event => {
                 });
             }
         } catch (error) {
-            // reporting
-            console.log(error);
+            //report
         }
     }
 
-    console.log(tickets);
+    const ticketIds = {};
 
-    for (const ticketObj of tickets) {
+    for (let ticketObj of tickets) {
         const ticket = ticketObj.ticket;
         const expoToken = ticketObj.expoToken;
         if (ticket.status === "error") {
@@ -221,11 +217,34 @@ exports.handler = async event => {
                             token: expoToken
                         }
                     });
-                } catch (error) {
-                    // report
+                } catch {
+                    //report
                 }
             }
-            console.log(ticket.details);
+        }
+        if (ticket.id) {
+            ticketIds[ticket.id] = expoToken;
+        }
+    }
+
+    if (Object.keys(ticketIds).length !== 0) {
+        const createExpoTicketsObject = gql`
+            mutation createExpoTicketsObject($tickets: AWSJSON!) {
+                createExpoTicketsObject(input: { tickets: $tickets }) {
+                    id
+                    tickets
+                }
+            }
+        `;
+        try {
+            await graphqlClient.mutate({
+                mutation: createExpoTicketsObject,
+                variables: {
+                    tickets: JSON.stringify(ticketIds)
+                }
+            });
+        } catch (error) {
+            //report
         }
     }
 

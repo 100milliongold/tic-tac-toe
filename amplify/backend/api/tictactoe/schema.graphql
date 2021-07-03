@@ -29,7 +29,7 @@ type GameData {
 
 type Player
     @model
-    @searchable
+    # @searchable
     @key(fields: ["username"])
     @auth(
         rules: [
@@ -130,4 +130,19 @@ type ExpoToken
     id: ID!
     token: String!
     playerUsername: String!
+}
+
+type ExpoTicketsObject
+    @model
+    @auth(
+        rules: [
+            {
+                allow: private
+                provider: iam
+                operations: [read, create, update, delete]
+            }
+        ]
+    ) {
+    id: ID!
+    tickets: AWSJSON!
 }
