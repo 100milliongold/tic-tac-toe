@@ -20,6 +20,7 @@ import Modal from "react-native-modal";
 import PlayersModal from "./player-modal/players-modal";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
+import * as Notifications from "expo-notifications";
 
 type MultiplayerHomeScreenNavigationProp = StackNavigationProp<
     StackNavigatorParams,
@@ -74,6 +75,10 @@ export default function MultiplayerHome({
                             : [...playerGames, ...newPlayerGames]
                     );
                     setNextToken(player.data.getPlayer.games.nextToken);
+                    /**
+                     * 아이콘 배지 카운트를 초기화
+                     */
+                    Notifications.setBadgeCountAsync(0);
                 }
             } catch (error) {
                 Alert.alert("Error!", "An error has occurrend!");

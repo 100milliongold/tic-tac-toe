@@ -1,18 +1,27 @@
 import React, { ReactNode, ReactElement, useState, useEffect } from "react";
 import {} from "react-native";
 import AppLoading from "expo-app-loading";
-
 import {
     useFonts,
     DeliusUnicase_400Regular,
     DeliusUnicase_700Bold
 } from "@expo-google-fonts/delius-unicase";
-
 import { Auth, Hub } from "aws-amplify";
-
 import { useAuth } from "@contexts/auth-context";
-
 import { initNotifications } from "@utils";
+import * as Notifications from "expo-notifications";
+
+/**
+ * 환경설정
+ * shouldShowAlert : 실행중인데도 알람표시
+ */
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false
+    })
+});
 
 type AppBootstrapProps = {
     children: ReactNode;
