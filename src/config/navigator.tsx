@@ -1,5 +1,9 @@
-import React, { ReactElement } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import React, { ReactElement, useState, useEffect, useRef } from "react";
+import {
+    NavigationContainer,
+    NavigationContainerRef,
+    StackActions
+} from "@react-navigation/native";
 import {
     createStackNavigator,
     StackNavigationOptions
@@ -16,6 +20,8 @@ import {
     MultiplayerGame
 } from "@screens";
 import { colors } from "@utils";
+import { useAuth } from "@contexts/auth-context";
+import * as Notifications from "expo-notifications";
 
 export type StackNavigatorParams = {
     Home: undefined;
@@ -57,8 +63,52 @@ const navigatorOptions: StackNavigationOptions = {
 };
 
 export default function Navigator(): ReactElement {
+    const { user } = useAuth();
+    const navigatorRef = useRef<NavigationContainerRef | null>(null);
+    const [isNavigatorReady, setIsNavigatorReady] = useState(false);
+
+    /**
+     * 네비게이터와 로그인이 되었을때만 이벤트 수신
+     */
+    useEffect(() => {
+        if (user && isNavigatorReady) {
+            const subscription =
+                Notifications.addNotificationResponseReceivedListener(
+                    response => {
+                        // console.log(response);
+                        const gameID =
+                            response.notification.request.content.data.gameId;
+
+                        if (
+                            navigatorRef.current?.getCurrentRoute()?.name ===
+                            "MultiplayerGame"
+                        ) {
+                            navigatorRef.current.dispatch(
+                                StackActions.replace("MultiplayerGame", {
+                                    gameID
+                                })
+                            );
+                        } else {
+                            navigatorRef.current?.navigate("MultiplayerGame", {
+                                gameID
+                            });
+                        }
+                    }
+                );
+
+            return () => {
+                subscription.remove();
+            };
+        }
+    }, [user, isNavigatorReady]);
+
     return (
-        <NavigationContainer>
+        <NavigationContainer
+            ref={navigatorRef}
+            onReady={() => {
+                setIsNavigatorReady(true);
+            }}
+        >
             <Stack.Navigator screenOptions={navigatorOptions}>
                 <Stack.Screen
                     name="Home"
