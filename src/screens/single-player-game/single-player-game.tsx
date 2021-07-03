@@ -1,8 +1,7 @@
 import React, { ReactElement, useState, useEffect } from "react";
-import { SafeAreaView, View, Dimensions } from "react-native";
+import { SafeAreaView, View, Dimensions, Platform } from "react-native";
 import { GradientBackground, Board, Text, Button } from "@components";
 import styles from "./single-player-game.style";
-
 import {
     isEmpty,
     BoardState,
@@ -11,8 +10,29 @@ import {
     Cell,
     useSounds
 } from "@utils";
-
 import { useSettings, difficulties } from "@contexts/settings-context";
+import { AdMobInterstitial, setTestDeviceIDAsync } from "expo-ads-admob";
+import Constants from "expo-constants";
+
+setTestDeviceIDAsync("EMULATOR");
+
+const addUnitID = Platform.select({
+    ios:
+        Constants.isDevice && !__DEV__
+            ? undefined
+            : "ca-app-pub-3940256099942544/4411468910",
+    android:
+        Constants.isDevice && !__DEV__
+            ? undefined
+            : "ca-app-pub-3940256099942544/1033173712"
+});
+
+/**
+ * 광고를 클릭해서 앱을 나갈때 이벤트 처리
+ */
+AdMobInterstitial.addEventListener("interstitialWillLeaveApplication", () => {
+    console.log("left app");
+});
 
 const SCREEM_WIDTH = Dimensions.get("screen").width;
 
@@ -84,6 +104,22 @@ export default function SinglePlayerGame(): ReactElement {
         setTurn(Math.random() < 0.5 ? "HUMAN" : "BOT");
     };
 
+    const showAd = async () => {
+        if (!addUnitID) {
+            return;
+        }
+        try {
+            await AdMobInterstitial.setAdUnitID(addUnitID);
+            await AdMobInterstitial.requestAdAsync({
+                // 맞춤 광고 표시
+                servePersonalizedAds: true
+            });
+            await AdMobInterstitial.showAdAsync();
+        } catch (error) {
+            //report
+        }
+    };
+
     useEffect(() => {
         if (gameResult) {
             // handle game finished
@@ -108,6 +144,11 @@ export default function SinglePlayerGame(): ReactElement {
                     ...gamesCount,
                     draws: gamesCount.draws + 1
                 });
+            }
+            const totalGames =
+                gamesCount.wins + gamesCount.losses + gamesCount.draws;
+            if (totalGames % 3 === 0) {
+                showAd();
             }
         } else {
             if (turn === "BOT") {
