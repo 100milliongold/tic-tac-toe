@@ -1,8 +1,11 @@
 {
-    "permissions": {
-        "api": {
-            "tictactoe": ["Query", "Mutation"]
-        }
-    },
-    "lambdaLayers": []
+  "permissions": {
+    "api": {
+      "tictactoe": [
+        "Query",
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
 }

@@ -40,8 +40,7 @@ const deleteExpoTicketsObject = gql`
 
 exports.handler = async event => {
     const graphqlClient = new appsync.AWSAppSyncClient({
-        // url: process.env.API_TICTACTOE_GRAPHQLAPIENDPOINTOUTPUT,
-        url: "http://172.26.80.1:20002/graphql",
+        url: process.env.API_TICTACTOE_GRAPHQLAPIENDPOINTOUTPUT,
         region: process.env.REGION,
         auth: {
             type: "AWS_IAM",
@@ -57,8 +56,6 @@ exports.handler = async event => {
     const ticketsRes = await graphqlClient.query({
         query: ticketsQuery
     });
-
-    // console.log(ticketsRes.data.listExpoTicketsObjects.items);
 
     const ticketsObjects = ticketsRes.data.listExpoTicketsObjects.items;
     for (const ticketsObject of ticketsObjects) {
